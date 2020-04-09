@@ -1,5 +1,4 @@
 import pandas as pd
-from datetime import datetime
 
 # Load data
 data = pd.read_csv("avocado.csv") 
@@ -16,9 +15,20 @@ del data['Small Bags']
 del data['type']
 del data['year']
 del data['region']
+# Rename AveragePrice to Price for standardization
+data = data.rename(columns={"AveragePrice": "Price"})
 # Now reformat all date fields such that they are strings of "mm-dd-yyyy"
+for index_label, row_series in data.iterrows():
+    # Date time module is being weird so unfortunately doing it manually
+    entry = data.at[index_label , 'Date']
+    int_of_date = int(entry.replace('-', ''))
+    data.at[index_label , 'Date'] = int_of_date
+'''
 for entry in data['Date']:
-    datetime_object = datetime.strptime(entry,'%Y-%m-%d')
-    new_datetime = datetime_object.strftime('%m-%d-%Y')
-    data.loc[data.Date == entry, 'Date'] = new_datetime
+    # Date time module is being weird so unfortunately doing it manually
+    int_of_date = int(entry.replace('-', ''))
+    data.set_value(to_replace=entry, value=int_of_date)
 print(data.head())
+'''
+# Output CSV
+data.to_csv("avocado_cleaned.csv", encoding='utf-8', index=False)
