@@ -19,6 +19,7 @@ del data['region']
 
 # Rename AveragePrice to Price for standardization
 data = data.rename(columns={"AveragePrice": "Price"})
+
 # Now reformat all date fields such that they are ints of "yyyymmdd"
 for index_label, row_series in data.iterrows():
     # Date time module is being weird so unfortunately doing it manually

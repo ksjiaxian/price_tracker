@@ -9,7 +9,7 @@ for file_name in raw_data:
     # Load data
     data = pd.read_csv(curr_file + ".csv") 
 
-    # Drop all unnecessary columns - basically all, but Date and Average Price
+    # Drop all unnecessary columns - basically all, but Date and Adj Close
     del data['Open']
     del data['High']
     del data['Low']
