@@ -81,3 +81,39 @@ WHERE s.dateID = 20200323) t,
 (SELECT (s.AAPL + s.AMZN)/2 as x_days_ago_weighted_price
 FROM Stocks s 
 WHERE s.dateID = 20200313) x ;
+
+7. How volatile is the price of Super Mario 64 over the last x months? (here x=8):
+Contributor: Varun
+
+SELECT (t.today_mario - p.past_mario) price_delta
+FROM
+(SELECT c.MARIO as today_mario
+FROM Commodities c 
+WHERE c.dateID = 20200102) t,
+(SELECT c.MARIO as past_mario
+FROM Commodities c
+WHERE c.dateID = 20190502) p ;
+
+8. Return the higher inflation-adjusted value of the Valentino Beanie Baby or Sears? (in 2006):
+Contributor: Varun
+WITH Sears AS (SELECT (SHLDQ/AMOUNT) as adjusted_sears
+FROM (SELECT dateID, SHLDQ
+FROM Stocks s
+WHERE dateID = 20060323) a 
+JOIN Dates d ON a.dateID = d.dateID
+JOIN Inflation i ON d.Year = i.Year),
+Valentino AS (SELECT (Valentino/AMOUNT) as adjusted_valentino
+FROM (SELECT dateID, Valentino
+FROM Commodities c
+WHERE dateID = 20060323) a 
+JOIN Dates d ON a.dateID = d.dateID
+JOIN Inflation i ON d.Year = i.Year)
+SELECT GREATEST(v.adjusted_valentino, s.adjusted_sears) as higher_value
+FROM Sears s, Valentino v;
+
+Overall Contributions - 
+Varun (47.5%): Obtained all raw data, which included downloading historical data from Yahoo Finance and scraping data for commodities. Also wrote Python scripts to clean all the data and manually cleaned data using Microsoft Excel. Prepared all data for ingestion into AWS DB. 
+Kenneth (47.5%): Assisted with some last-minute data cleaning for ingestion. Handled all of the ingestion process, which included writing DLL statements and configuring DB. Wrote 6/8 SQL queries and collaborated with Varun to adjust some data when ingestion had problems (i.e. changing Date column to dateID). 
+Arun (5%): Helped to revamp overall idea and pushed us to include the commodities data. Will handle most of web development rather than working on data and SQL work, thus making all contributions for the overall project equal. 
+
+Our Github is fully updated with raw data, cleaned data, cleaning scripts, SQL DLL, and SQL queries. 

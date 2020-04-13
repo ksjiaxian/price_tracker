@@ -45,6 +45,7 @@ JOIN Inflation i ON d.Year = i.Year);
 --given a day, was this a good day?--
 --suppose that in our application, we already have an average--
 --good days are where everything is above average--
+-- this will be implented later --
 
 --SELECT 1
 --FROM Avocado a 
@@ -59,6 +60,7 @@ JOIN Inflation i ON d.Year = i.Year);
 
 --given a day, was this a bad day?--
 --bad days are where everything is below average--
+-- this will be implented later --
 
 --SELECT -1
 --FROM Avocado a 
@@ -82,3 +84,29 @@ WHERE s.dateID = 20200323) t,
 (SELECT (s.AAPL + s.AMZN)/2 as x_days_ago_weighted_price
 FROM Stocks s 
 WHERE s.dateID = 20200313) x ;
+
+--How volatile is the price of Super Mario 64 over the last x months? (here x=8)--
+SELECT (t.today_mario - p.past_mario) price_delta
+FROM
+(SELECT c.MARIO as today_mario
+FROM Commodities c 
+WHERE c.dateID = 20200102) t,
+(SELECT c.MARIO as past_mario
+FROM Commodities c
+WHERE c.dateID = 20190502) p ;
+
+--Return the higher inflation-adjusted value of the Valentino Beanie Baby or Sears? (in 2006)--
+WITH Sears AS (SELECT (SHLDQ/AMOUNT) as adjusted_sears
+FROM (SELECT dateID, SHLDQ
+FROM Stocks s
+WHERE dateID = 20060323) a 
+JOIN Dates d ON a.dateID = d.dateID
+JOIN Inflation i ON d.Year = i.Year),
+Valentino AS (SELECT (Valentino/AMOUNT) as adjusted_valentino
+FROM (SELECT dateID, Valentino
+FROM Commodities c
+WHERE dateID = 20060323) a 
+JOIN Dates d ON a.dateID = d.dateID
+JOIN Inflation i ON d.Year = i.Year)
+SELECT GREATEST(v.adjusted_valentino, s.adjusted_sears) as higher_value
+FROM Sears s, Valentino v;
