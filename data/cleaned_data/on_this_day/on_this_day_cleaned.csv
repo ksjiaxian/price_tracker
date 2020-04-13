@@ -1,4 +1,4 @@
-Date,Year,Month,Day,history
+dateID,Year,Month,Day,history
 19700102,1970,January,2,
 19700105,1970,January,5,
 19700106,1970,January,6,
@@ -9144,7 +9144,7 @@ Widespread desertion, suicide, and crime among New Orleans police officers has b
 20051103,2005,November,3,"Measles Initiative (MI) announces that since 1999, more than 200 million children in Africa have been vaccinated against measles, reducing the infection rate by 60 percent and saving 1 million lives. (allAfrica)"
 20051104,2005,November,4,"Clashes continue in Debre Berhan, while government forces succeed in pacifying Bahir Dar and Awasa. The Ethiopian capital Addis Ababa remained calm, with few shops open and no taxis operating. (BBC)"
 20051107,2005,November,7,"Sierra Leone Health and Sanitation Minister, Abator Thomas says that polio has been eradicated in the country, following a successful immunization program. (allAfrica)"
-20051108,2005,November,8,2005 Liberian elections: Liberians go to the polls in a presidential run-off election between millionaire soccer star George Weah and former finance minister. Ellen Johnson-Sirleaf. Sirleaf wins 	59.4 percent to Weah's 40.6 percent. (Scotsman) (CBC)
+20051108,2005,November,8,"2005 Liberian elections: Liberians go to the polls in a presidential run-off election between millionaire soccer star George Weah and former finance minister. Ellen Johnson-Sirleaf. Sirleaf wins 	59.4 percent to Weah's 40.6 percent. (Scotsman) (CBC)"
 20051109,2005,November,9,"Facing the world's highest HIV infection rate, Swaziland is drafting a Sexual Offences and Domestic Violence Bill proposing the death penalty for child rape, incest and the intentional transmission of HIV. Amnesty International later expresses concern. "
 20051110,2005,November,10,"Liberian presidential election: Ellen Johnson-Sirleaf wins the Liberian presidential run-off election in Liberia, defeating George Weah. Johnson-Sirleaf becomes the first-ever elected female head of state in Africa. AP, NYT"
 20051111,2005,November,11,"Three British prisoners are freed in Iran after pressure from the British Foreign Office. The trio were seized at by Iranian Navy patrol boats on 28 October, when they sailed their boat to the disputed island of Abu Musa, which is claimed by both Iran and the United Arab Emirates. (BBC)"
