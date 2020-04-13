@@ -1,1 +1,84 @@
-This file will contain the milestone 3 queries, copied over from the sql_queries file
+*** MILESTONE 3 ***
+Project: Price Tracker
+Group Members:
+	Kenneth Shinn
+	Varun Ramakrishnan
+	Arun Kirubarajan
+
+Database Credentials -
+Hostname: cis550pricetracker.cgcukgcycu5f.us-east-1.rds.amazonaws.com
+Port: 1521
+SID: CIS550DB
+Username: admin
+Password: password
+
+Queries -
+
+
+1. Simple queries to get basic price information:
+Contributor: Kenneth
+
+SELECT AAPL 
+FROM Stocks s 
+WHERE s.dateID = 20200324;
+
+Also can include queries to get history:
+
+Select history as news_today
+From History h
+Where h.dateid = 20080808;
+
+
+2. Get the price adjusted for inflation (i.e. how much would AAPL cost in 1980?):
+Contributor: Kenneth
+
+SELECT (AAPL / adjustment_rate.AMOUNT) as adjusted_AAPL
+FROM Stocks s, (
+SELECT Amount 
+FROM Inflation i
+WHERE i.Year = 1980) adjustment_rate
+WHERE s.dateID = 20200324;
+
+
+3. Compare specific stocks against indexes (i.e. is Apple stock gaining value faster than NASDAQ?):
+Contributor: Kenneth
+
+SELECT s.AAPL as apple_stock, i.nasdaq as nasdaq
+FROM Indexes i JOIN Stocks s
+ON i.dateID = s.dateID
+WHERE i.dateID >= 20200311;
+
+
+4. Given a series of days, see how each day's current events affect the stock prices (i.e. in this example you can see that negative world events of the last month caused the stocks to plummet):
+Contributor: Kenneth
+
+SELECT s.AAPL as Apple, s.AMZN as Amazon, s.JCP as JCPenney, s.GE as GE, s.BB as BlackBerry, h.history
+FROM Stocks s JOIN History h
+ON s.dateID = h.dateID
+WHERE s.dateID >= 20200211
+AND s.dateID <= 20200320;
+
+
+5. What's the average price of a stock adjusted for inflation (here we limit to the dates to when apple was a company):
+Contributor: Kenneth
+
+SELECT AVG(adjusted_apple)
+FROM (SELECT (AAPL/AMOUNT) as adjusted_apple
+FROM (SELECT dateID, AAPL
+FROM Stocks s
+WHERE dateID >= 19801212) a 
+JOIN Dates d ON a.dateID = d.dateID
+JOIN Inflation i ON d.Year = i.Year);
+
+
+6. In the last x days, have prices in my bundle of stocks been trending down or up? (here x=10):
+Contributor: Kenneth
+
+SELECT (t.today_weighted_price - x.x_days_ago_weighted_price) price_delta
+FROM
+(SELECT (s.AAPL + s.AMZN)/2 as today_weighted_price
+FROM Stocks s 
+WHERE s.dateID = 20200323) t,
+(SELECT (s.AAPL + s.AMZN)/2 as x_days_ago_weighted_price
+FROM Stocks s 
+WHERE s.dateID = 20200313) x ;
