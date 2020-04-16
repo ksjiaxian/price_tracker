@@ -12,7 +12,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-      <a class="navbar-brand" href="/">Price Tracker</a>
+      <a class="navbar-brand" href="/"><strong>Price Tracker</strong></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -32,7 +32,35 @@
       </div>
     </nav>
 
-    <p>figure out what to put here</p>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <br /><br />
+          
+          <h1><strong>Dashboard</strong></h1>
+          <p class="text-muted">Discover the current market values of a variety of goods.</p>
+
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Research database for..." aria-label="Text input with segmented dropdown button">
+            <div class="input-group-append">
+              <button type="button" class="btn btn-outline-info">Search</button>
+            </div>
+          </div>
+
+          <br />
+          <small>Click on a result to view a timeline of its value:</small>
+          <ul style="margin-top: 10px;" class="list-group">
+            <a style="margin-top: 3px" href="/timeline"><li class="list-group-item"> Avacados <span style="margin-left: 15px" class="badge badge-secondary">Good</span> </li></a>
+            <a style="margin-top: 3px" href="/timeline"><li class="list-group-item"> S&P 500 <span style="margin-left: 15px" class="badge badge-secondary">Index</span> </li></a>
+            <a style="margin-top: 3px" href="/timeline"><li class="list-group-item"> Sliced Bread <span style="margin-left: 15px" class="badge badge-secondary">Good</span> </li></a>
+            <a style="margin-top: 3px" href="/timeline"><li class="list-group-item"> GOOG <span style="margin-left: 15px" class="badge badge-secondary">Stock</span> </li></a>
+          </ul>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+    </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

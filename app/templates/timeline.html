@@ -7,12 +7,49 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 
     <title>Price Tracker</title>
+
+    <script>
+      window.onload = function () {
+      
+      var limit = 10000;    //increase number of dataPoints by increasing the limit
+      var y = 100;    
+      var data = [];
+      var dataSeries = { type: "line" };
+      var dataPoints = [];
+      for (var i = 0; i < limit; i += 1) {
+        y += Math.round(Math.random() * 10 - 5);
+        dataPoints.push({
+          x: i,
+          y: y
+        });
+      }
+      dataSeries.dataPoints = dataPoints;
+      data.push(dataSeries);
+      
+      //Better to construct options first and then pass it as a parameter
+      var options = {
+        zoomEnabled: true,
+        animationEnabled: true,
+        axisY: {
+          includeZero: false
+        },
+        data: data  // random data
+      };
+      
+      $("#chartContainer").CanvasJSChart(options);
+      
+      }
+    </script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-      <a class="navbar-brand" href="/">Price Tracker</a>
+      <a class="navbar-brand" href="/"><strong>Price Tracker</strong></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -32,11 +69,37 @@
       </div>
     </nav>
 
-    <p>graphs and shit</p>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <div class="container">
+      <div class="row" style="margin-top: 3rem;">
+        <div class="col-md-8">
+          
+          <h1><strong>Timeline</strong></h1>
+          <p class="text-muted">Showing the value of <strong>APPL:</strong></p>
+          <div id="chartContainer" style="width: 100%;"></div>
+        <div class="col-md-4"></div>
+      </div>
+
+      <div class="col-md-4">
+        <br /> <br /> <br />
+        <h2><strong>Quick Facts</strong></h2>
+        <div class="card" style="width: 100%;">
+          <div class="card-body">
+            <h5 class="card-title">Maximum Price</h5>
+            <h6 class="card-subtitle mb-2 text-muted">June 2, 1999</h6>
+            <p class="card-text"><strong>520.12 USD</strong></p>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 10px; width: 100%;">
+          <div class="card-body">
+            <h5 class="card-title">Minimum Price</h5>
+            <h6 class="card-subtitle mb-2 text-muted">June 2, 1999</h6>
+            <p class="card-text"><strong>0.12 USD</strong></p>
+          </div>
+        </div>
+        <br />
+        <small >Similar assets:</small> <br style="margin-bottom: 5px;"/>
+        <a href="/timeline" class="btn btn-info btn-sm">GOOG</a> <a href="/timeline" class="btn btn-info btn-sm">Computers</a>
+      </div>
+    </div>
   </body>
 </html>
