@@ -5,13 +5,13 @@ app = Flask(__name__)
 def splash():
 	return render_template("splash.html")
 
-@app.route("/dashboard")
+@app.route("/stocks")
 def dashboard():
-	return render_template("dashboard.html")
+	return render_template("stocks.html")
 
-@app.route("/timeline")
+@app.route("/commodities")
 def timeline():
-	return render_template("timeline.html")
+	return render_template("commodities.html")
 
 @app.route("/cart")
 def cart():
