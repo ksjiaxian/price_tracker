@@ -16,22 +16,32 @@
 
     <script>
       window.onload = function () {
-      
-      var limit = 10000;    //increase number of dataPoints by increasing the limit
-      var y = 100;    
+
       var data = [];
       var dataSeries = { type: "line" };
       var dataPoints = [];
-      for (var i = 0; i < limit; i += 1) {
-        y += Math.round(Math.random() * 10 - 5);
+      var flask_output = {{ data | safe }};
+      var i = 0;
+      for (const date_id in flask_output) {
+          var curr_date = date_id;
+          var day = date_id % 100;
+          curr_date = Math.floor(date_id/100);
+          var month = curr_date % 100;
+          var year = Math.floor(date_id/10000);
+
+          console.log(year);
+          console.log(month);
+          console.log(day);
+          console.log(' ');
         dataPoints.push({
-          x: i,
-          y: y
+          x: new Date(year, month-1, day), // java script months are 0 indexed for some reason :/
+          y: flask_output[date_id]
         });
+        i += 1;
       }
       dataSeries.dataPoints = dataPoints;
-      data.push(dataSeries);
-      
+      data.push(dataSeries)
+
       //Better to construct options first and then pass it as a parameter
       var options = {
         zoomEnabled: true,
@@ -39,11 +49,11 @@
         axisY: {
           includeZero: false
         },
-        data: data  // random data
+        data: data
       };
-      
+
       $("#chartContainer").CanvasJSChart(options);
-      
+
       }
     </script>
   </head>
@@ -53,14 +63,14 @@
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-    
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/stocks">Stocks</a>
+            <a class="nav-link" href="/dashboard">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/commodities">Commodities</a>
+            <a class="nav-link" href="/timeline">Timeline</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/cart">Cart</a>
@@ -72,9 +82,9 @@
     <div class="container">
       <div class="row" style="margin-top: 3rem;">
         <div class="col-md-8">
-          
+
           <h1><strong>Timeline</strong></h1>
-          <p class="text-muted">Showing the value of <strong>APPL:</strong></p>
+          <p class="text-muted">Showing the value of <strong>{{name}}:</strong></p>
           <div id="chartContainer" style="width: 100%;"></div>
         <div class="col-md-4"></div>
       </div>
@@ -85,15 +95,15 @@
         <div class="card" style="width: 100%;">
           <div class="card-body">
             <h5 class="card-title">Maximum Price</h5>
-            <h6 class="card-subtitle mb-2 text-muted">June 2, 1999</h6>
-            <p class="card-text"><strong>520.12 USD</strong></p>
+            <h6 class="card-subtitle mb-2 text-muted">{{max_date}}</h6>
+            <p class="card-text"><strong>{{max}}</strong></p>
           </div>
         </div>
         <div class="card" style="margin-top: 10px; width: 100%;">
           <div class="card-body">
             <h5 class="card-title">Minimum Price</h5>
-            <h6 class="card-subtitle mb-2 text-muted">June 2, 1999</h6>
-            <p class="card-text"><strong>0.12 USD</strong></p>
+            <h6 class="card-subtitle mb-2 text-muted">{{min_date}}</h6>
+            <p class="card-text"><strong>{{min}}</strong></p>
           </div>
         </div>
         <br />
