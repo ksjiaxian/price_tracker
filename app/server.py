@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 import cx_Oracle
 
-
+# database credentials
 username = 'admin'
 password = 'password'
 dsn = 'cis550pricetracker.cgcukgcycu5f.us-east-1.rds.amazonaws.com/CIS550DB'
@@ -14,14 +14,7 @@ app = Flask(__name__)
 def splash():
 	connection = None
 	try:
-		connection = cx_Oracle.connect(
-			username,
-			password,
-			dsn)
-
-		# show the version of the Oracle Database
-		# print(connection.version)
-		connection.cursor
+		connection = cx_Oracle.connect(username,password,dsn)
 
 	except cx_Oracle.Error as error:
 		print(error)
@@ -29,8 +22,8 @@ def splash():
 
 	c = connection.cursor()
 	c.execute('SELECT * FROM History WHERE dateID >= 20200314')
-	dbtest = '<p>'
 
+	dbtest = '<p>'
 	for i in c:
 		dbtest += i[1] + '</p>'
 
