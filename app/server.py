@@ -1,11 +1,40 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
+import cx_Oracle
+
+
+username = 'admin'
+password = 'password'
+dsn = 'cis550pricetracker.cgcukgcycu5f.us-east-1.rds.amazonaws.com/CIS550DB'
+port = 1512
+
 
 app = Flask(__name__)
 
 @app.route("/")
 def splash():
-	return render_template("splash.html")
+	connection = None
+	try:
+		connection = cx_Oracle.connect(
+			username,
+			password,
+			dsn)
+
+		# show the version of the Oracle Database
+		# print(connection.version)
+		connection.cursor
+
+	except cx_Oracle.Error as error:
+		print(error)
+		connection.close()
+
+	c = connection.cursor()
+	c.execute('SELECT * FROM History WHERE dateID >= 20200314')
+	dbtest = '<p>'
+
+	for i in c:
+		dbtest += i[1] + '</p>'
+
+	return render_template("splash.html", dbtest=dbtest)
 
 @app.route("/stocks")
 def dashboard():
