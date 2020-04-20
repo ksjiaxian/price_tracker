@@ -29,14 +29,18 @@ def stocks():
             table = 'INDEXES'
         else:
             table = 'STOCKS'
-        (item_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        (return_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        link = get_twitter_link(name)
+        item_name = get_item_name(name)
         return render_template("item.html",
+                               item_name=item_name,
                                name=name,
                                max=max_price,
                                max_date=max_date,
                                min=min_price,
                                min_date=min_date,
-                               data=data_json)
+                               data=data_json,
+                               link=link)
 
     return render_template("stocks.html")
 
@@ -46,14 +50,18 @@ def commodities():
     if request.method == 'POST':
         name = request.form['input']
         table = 'COMMODITIES'
-        (item_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        (return_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        link = get_twitter_link(name)
+        item_name = get_item_name(name)
         return render_template("item.html",
+                            item_name = item_name,
                             name=name,
                             max=max_price,
                             max_date=max_date,
                             min=min_price,
                             min_date=min_date,
-                            data=data_json)
+                            data=data_json,
+                            link=link)
     return render_template("commodities.html")
 
 
@@ -120,6 +128,68 @@ def get_data(item, table_name):
 
     return name, max_price, min_price, max_date, min_date, data_json
 
+# This function returns the twitter link for embedding
+def get_twitter_link(item):
+    start_of_link = "https://twitter.com/"
+    end_of_link = "?ref_src=twsrc%5Etfw"
+    # Create a dictionary with all twitter handles (must be done manually)
+    handles = {'SP': 'SPDJIndices',
+               'NASDAQ': 'Nasdaq',
+               'DOW': 'SPDJIndices',
+               'AAPL': 'Apple',
+               'AMZN': 'Amazon',
+               'GE': 'GeneralElectric',
+               'PG': 'ProcterGamble',
+               'SHLDQ': 'Sears',
+               'JCP': 'jcpenney',
+               'FMCC': 'FreddieMac',
+               'BB': 'BlackBerry',
+               'CHK': 'Chesapeake',
+               'AXL': 'AmericanAxle',
+               'BJRI': 'bjsrestaurants',
+               'GWPH': 'MJBizDaily',
+               'IBM': 'IBM',
+               'CCL': 'CarnivalCruise',
+               'XOM': 'exxonmobil',
+               'GOLD': 'GOLDCOUNCIL',
+               'OIL': 'WorldOil',
+               'WAGNER': 'SABRbbcards',
+               'VALENTINO': 'TyInc',
+               'ROMEO': 'alfa_romeo',
+               'MARIO': 'NintendoAmerica',
+               'POKEMON': 'Pokemon'}
+    link = start_of_link + handles[item] + end_of_link
+    print(link)
+    return link
+
+def get_item_name(item):
+    handles = {'SP': 'S&P 500 Index',
+               'NASDAQ': 'Nasdaq',
+               'DOW': 'Dow Jones Industrial Average',
+               'AAPL': 'Apple',
+               'AMZN': 'Amazon',
+               'GE': 'General Electric',
+               'PG': 'Procter & Gamble',
+               'SHLDQ': 'Sears Holdings Corporation',
+               'JCP': 'J.C. Penney',
+               'FMCC': 'The Federal Home Loan Mortgage Corporation',
+               'BB': 'BlackBerry',
+               'CHK': 'Chesapeake Energy',
+               'AXL': 'American Axle & Manufacturing',
+               'BJRI': 'BJ\'s Restaurants',
+               'GWPH': 'GW Pharmaceuticals',
+               'IBM': 'IBM',
+               'CCL': 'Carnival Cruise Line',
+               'XOM': 'Exxon Mobil Corporation',
+               'GOLD': 'Gold',
+               'OIL': 'Oil',
+               'WAGNER': 'T206 Honus Wagner Baseball Card',
+               'VALENTINO': 'Ty Beanie Baby - Valentino the Bear',
+               'ROMEO': '1939 Alfa Romeo 8C 2900B Lungo Spider',
+               'MARIO': 'Super Mario 64 - Nintendo 64',
+               'POKEMON': 'Pokemon FireRed - Game Boy Advance'}
+    item_name = handles[item]
+    return item_name
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
