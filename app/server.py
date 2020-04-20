@@ -30,7 +30,7 @@ def stocks():
         else:
             table = 'STOCKS'
         (item_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
-        return render_template("timeline.html",
+        return render_template("item.html",
                                name=name,
                                max=max_price,
                                max_date=max_date,
@@ -41,8 +41,19 @@ def stocks():
     return render_template("stocks.html")
 
 
-@app.route("/commodities")
+@app.route("/commodities", methods=['GET', 'POST'])
 def commodities():
+    if request.method == 'POST':
+        name = request.form['input']
+        table = 'COMMODITIES'
+        (item_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        return render_template("item.html",
+                            name=name,
+                            max=max_price,
+                            max_date=max_date,
+                            min=min_price,
+                            min_date=min_date,
+                            data=data_json)
     return render_template("commodities.html")
 
 
