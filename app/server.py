@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import cx_Oracle
 import json
 from datetime import datetime
@@ -11,29 +11,33 @@ port = 1512
 
 app = Flask(__name__)
 
+# current selection
+name = 'BB'
+table = 'Stocks'
+
 
 @app.route("/")
 def splash():
-    connection = None
-    try:
-        connection = cx_Oracle.connect(username, password, dsn)
-
-    except cx_Oracle.Error as error:
-        print(error)
-        connection.close()
-
-    c = connection.cursor()
-    c.execute('SELECT * FROM History WHERE dateID >= 20200314')
-
-    dbtest = '<p>'
-    for i in c:
-        dbtest += i[1] + '</p>'
-
-    return render_template("splash.html", dbtest=dbtest)
+    return render_template("splash.html")
 
 
-@app.route("/stocks")
+@app.route("/stocks", methods=['GET', 'POST'])
 def stocks():
+    if request.method == 'POST':
+        name = request.form['input']
+        if name == 'SP' or name == 'NASDAQ' or name == 'DOW':
+            table = 'INDEXES'
+        else:
+            table = 'STOCKS'
+        (item_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        return render_template("timeline.html",
+                               name=name,
+                               max=max_price,
+                               max_date=max_date,
+                               min=min_price,
+                               min_date=min_date,
+                               data=data_json)
+
     return render_template("stocks.html")
 
 
@@ -47,10 +51,9 @@ def cart():
     return render_template("cart.html")
 
 
-# can delete this later - just for testing getting data from database!
-@app.route("/timeline")
+@app.route("/timeline", methods=['POST'])
 def timeline():
-    name = 'AAPL'
+    print('in the timeline!')
     connection = None
     try:
         connection = cx_Oracle.connect(username, password, dsn)
@@ -60,22 +63,22 @@ def timeline():
         connection.close()
 
     c = connection.cursor()
-    c.execute('SELECT dateID, ' + name + ' FROM Stocks s')
+    c.execute('SELECT dateID, ' + name + ' FROM ' + table + ' s')
 
     min_price = connection.cursor()
-    min_price.execute('SELECT MIN( ' + name + ' ) FROM Stocks s WHERE s.AAPL > 0')
+    min_price.execute('SELECT MIN( ' + name + ' ) FROM ' + table + ' s WHERE s.' + name + ' > 0')
     min_price = '$' + [str(i[0]) for i in min_price][0]
     min_date = connection.cursor()
     min_date.execute(
-        'SELECT dateID FROM Stocks s WHERE s.' + name + ' = (SELECT MIN(' + name + ') FROM Stocks s WHERE s.' + name + ' > 0)')
+        'SELECT dateID FROM ' + table + ' s WHERE s.' + name + ' = (SELECT MIN(' + name + ') FROM ' + table + ' s WHERE s.' + name + ' > 0)')
     min_date = date_prettify([str(i[0]) for i in min_date][0])
 
     max_price = connection.cursor()
-    max_price.execute('SELECT MAX( ' + name + ' ) FROM Stocks s WHERE s.AAPL > 0')
+    max_price.execute('SELECT MAX( ' + name + ' ) FROM ' + table + ' s WHERE s.' + name + ' > 0')
     max_price = '$' + [str(i[0]) for i in max_price][0]
     max_date = connection.cursor()
     max_date.execute(
-        'SELECT dateID FROM Stocks s WHERE s.' + name + ' = (SELECT MAX(' + name + ') FROM Stocks s WHERE s.' + name + ' > 0)')
+        'SELECT dateID FROM ' + table + ' s WHERE s.' + name + ' = (SELECT MAX(' + name + ') FROM ' + table + ' s WHERE s.' + name + ' > 0)')
     max_date = date_prettify([str(i[0]) for i in max_date][0])
 
     data_points = {}
@@ -114,5 +117,45 @@ def date_prettify(date_id):
     return date_pretty
 
 
+# this function gets the data of a stock, commodity, or index given its type and name
+def get_data(item, table_name):
+    connection = None
+    try:
+        connection = cx_Oracle.connect(username, password, dsn)
+
+    except cx_Oracle.Error as error:
+        print(error)
+        connection.close()
+
+    c = connection.cursor()
+    c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s')
+
+    min_price = connection.cursor()
+    min_price.execute('SELECT MIN( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0')
+    min_price = '$' + [str(i[0]) for i in min_price][0]
+    min_date = connection.cursor()
+    min_date.execute(
+        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MIN(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
+    min_date = date_prettify([str(i[0]) for i in min_date][0])
+
+    max_price = connection.cursor()
+    max_price.execute('SELECT MAX( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0')
+    max_price = '$' + [str(i[0]) for i in max_price][0]
+    max_date = connection.cursor()
+    max_date.execute(
+        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
+    max_date = date_prettify([str(i[0]) for i in max_date][0])
+
+    data_points = {}
+    for i in c:
+        data_points[int(i[0])] = i[1]
+
+    data_json = json.dumps(data_points)
+
+    return name, max_price, min_price, max_date, min_date, data_json
+
+
 if __name__ == "__main__":
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.run(port=8000, debug=True)

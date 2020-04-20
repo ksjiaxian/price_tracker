@@ -23,6 +23,9 @@
       var flask_output = {{ data | safe }};
       var i = 0;
       for (const date_id in flask_output) {
+          if (flask_output[date_id] < 0.01 ) {
+              continue;
+          }
           var curr_date = date_id;
           var day = date_id % 100;
           curr_date = Math.floor(date_id/100);
@@ -58,6 +61,7 @@
     </script>
   </head>
   <body>
+    <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
       <a class="navbar-brand" href="/"><strong>Price Tracker</strong></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,10 +71,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/dashboard">Dashboard</a>
+            <a class="nav-link" href="/stocks">Stocks</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/timeline">Timeline</a>
+            <a class="nav-link" href="/commodities">Commodities</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/cart">Cart</a>
@@ -83,15 +87,14 @@
       <div class="row" style="margin-top: 3rem;">
         <div class="col-md-8">
 
-          <h1><strong>Timeline</strong></h1>
-          <p class="text-muted">Showing the value of <strong>{{name}}:</strong></p>
+          <h1><strong>{{name}}</strong></h1>
           <div id="chartContainer" style="width: 100%;"></div>
         <div class="col-md-4"></div>
       </div>
 
       <div class="col-md-4">
         <br /> <br /> <br />
-        <h2><strong>Quick Facts</strong></h2>
+        <h2><strong>Quick Stats</strong></h2>
         <div class="card" style="width: 100%;">
           <div class="card-body">
             <h5 class="card-title">Maximum Price</h5>
