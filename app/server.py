@@ -51,51 +51,6 @@ def cart():
     return render_template("cart.html")
 
 
-@app.route("/timeline", methods=['POST'])
-def timeline():
-    print('in the timeline!')
-    connection = None
-    try:
-        connection = cx_Oracle.connect(username, password, dsn)
-
-    except cx_Oracle.Error as error:
-        print(error)
-        connection.close()
-
-    c = connection.cursor()
-    c.execute('SELECT dateID, ' + name + ' FROM ' + table + ' s')
-
-    min_price = connection.cursor()
-    min_price.execute('SELECT MIN( ' + name + ' ) FROM ' + table + ' s WHERE s.' + name + ' > 0')
-    min_price = '$' + [str(i[0]) for i in min_price][0]
-    min_date = connection.cursor()
-    min_date.execute(
-        'SELECT dateID FROM ' + table + ' s WHERE s.' + name + ' = (SELECT MIN(' + name + ') FROM ' + table + ' s WHERE s.' + name + ' > 0)')
-    min_date = date_prettify([str(i[0]) for i in min_date][0])
-
-    max_price = connection.cursor()
-    max_price.execute('SELECT MAX( ' + name + ' ) FROM ' + table + ' s WHERE s.' + name + ' > 0')
-    max_price = '$' + [str(i[0]) for i in max_price][0]
-    max_date = connection.cursor()
-    max_date.execute(
-        'SELECT dateID FROM ' + table + ' s WHERE s.' + name + ' = (SELECT MAX(' + name + ') FROM ' + table + ' s WHERE s.' + name + ' > 0)')
-    max_date = date_prettify([str(i[0]) for i in max_date][0])
-
-    data_points = {}
-    for i in c:
-        data_points[int(i[0])] = i[1]
-
-    data_json = json.dumps(data_points)
-
-    # return render_template("timeline.html", data=dbtest)
-    return render_template("timeline.html",
-                           name=name,
-                           max=max_price,
-                           max_date=max_date,
-                           min=min_price,
-                           min_date=min_date,
-                           data=data_json)
-
 
 def date_prettify(date_id):
     months = {1: 'January',
