@@ -20,56 +20,46 @@ table = 'Stocks'
 def splash():
     return render_template("splash.html")
 
+@app.route("/item")
+def item():
+    kind = request.args.get('kind')
+    name = request.args.get('name')
 
-@app.route("/stocks", methods=['GET', 'POST'])
-def stocks():
-    if request.method == 'POST':
-        name = request.form['input']
-        if name == 'SP' or name == 'NASDAQ' or name == 'DOW':
-            table = 'INDEXES'
-        else:
-            table = 'STOCKS'
+    if kind == "stocks":
+        if name == 'SP' or name == 'NASDAQ' or name == 'DOW': table = 'INDEXES'
+        else: table = 'STOCKS'
         (return_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
-        return render_template("item.html",
-                               item_name=item_name,
-                               name=name,
-                               max=max_price,
-                               max_date=max_date,
-                               min=min_price,
-                               min_date=min_date,
-                               data=data_json,
-                               link=link)
+    else:
+        table = 'COMMODITIES'
+        (return_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        link = get_twitter_link(name)
+        item_name = get_item_name(name)
 
+    return render_template("item.html",
+                        item_name = item_name,
+                        name=name,
+                        max=max_price,
+                        max_date=max_date,
+                        min=min_price,
+                        min_date=min_date,
+                        data=data_json,
+                        link=link)
+
+@app.route("/stocks", methods=['GET', 'POST'])
+def stocks():
     return render_template("stocks.html")
 
 
 @app.route("/commodities", methods=['GET', 'POST'])
 def commodities():
-    if request.method == 'POST':
-        name = request.form['input']
-        table = 'COMMODITIES'
-        (return_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
-        link = get_twitter_link(name)
-        item_name = get_item_name(name)
-        return render_template("item.html",
-                            item_name = item_name,
-                            name=name,
-                            max=max_price,
-                            max_date=max_date,
-                            min=min_price,
-                            min_date=min_date,
-                            data=data_json,
-                            link=link)
     return render_template("commodities.html")
 
 
 @app.route("/cart")
 def cart():
     return render_template("cart.html")
-
-
 
 def date_prettify(date_id):
     months = {1: 'January',
