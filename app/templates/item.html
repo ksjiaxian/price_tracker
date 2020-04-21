@@ -85,35 +85,37 @@
 
     <div class="container">
       <div class="row" style="margin-top: 3rem;">
-        <div class="col-md-8">
-
+        <div class="col-md-3">
+          <a class="twitter-timeline" href={{link}}></a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <br />
+        </div>
+        <div class="col-md-6">
           <h1><strong>{{item_name}}</strong></h1>
-          <div id="chartContainer" style="width: 100%;"></div>
-        <div class="col-md-4"></div>
-      </div>
-
-      <div class="col-md-4">
-        <br /> <br /> <br />
-        <h2><strong>Quick Stats</strong></h2>
-        <div class="card" style="width: 100%;">
-          <div class="card-body">
-            <h5 class="card-title">Maximum Price</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{max_date}}</h6>
-            <p class="card-text"><strong>{{max}}</strong></p>
-          </div>
+          <div id="chartContainer" style="width: 100%; height: 40vh"></div>
         </div>
-        <div class="card" style="margin-top: 10px; width: 100%;">
-          <div class="card-body">
-            <h5 class="card-title">Minimum Price</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{min_date}}</h6>
-            <p class="card-text"><strong>{{min}}</strong></p>
+        <div class="col-md-3">
+          <h2><strong>Quick Stats</strong></h2>
+          <div class="card" style="width: 100%;">
+            <div class="card-body">
+              <h5 class="card-title">Maximum Price</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{max_date}}</h6>
+              <p class="card-text"><strong>{{max}}</strong></p>
+            </div>
           </div>
+          <div class="card" style="margin-top: 10px; width: 100%;">
+            <div class="card-body">
+              <h5 class="card-title">Minimum Price</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{min_date}}</h6>
+              <p class="card-text"><strong>{{min}}</strong></p>
+            </div>
+          </div>
+          <br />
+          <h2><strong>Manage</strong></h2>
+          <input style="margin-bottom: 0.5rem" type="number" placeholder="quantity goes here..." />
+          <button class="btn btn-info">Buy Quantity</button>
+          <button class="btn btn-success">Sell Quantity</button>
         </div>
-        <br />
-        <small >Similar assets:</small> <br style="margin-bottom: 5px;"/>
-        <a href="/timeline" class="btn btn-info btn-sm">GOOG</a> <a href="/timeline" class="btn btn-info btn-sm">Computers</a>
       </div>
     </div>
-    <a class="twitter-timeline" href={{link}}></a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   </body>
 </html>
