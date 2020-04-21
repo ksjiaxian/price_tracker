@@ -51,62 +51,24 @@
           <br />
           <small>Click on a result to view the listing: </small>
           <ul style="margin-top: 10px;" class="list-group">
-              <form method="POST">
-                  <label for="sp">S&P 500 Index:</label>
-                  <input type="submit" id = 'sp' name="input" value="SP" ><br>
-                  <label for="sp">Nasdaq Composite:</label>
-                  <input type="submit" name="input" value="NASDAQ" ><br>
-                  <label for="sp">Dow Jones Industrial Average:</label>
-                  <input type="submit" name="input" value="DOW"><br>
-                  <label for="sp">Apple:</label>
-                  <input type="submit" name="input" value="AAPL"><br>
-                  <label for="sp">Amazon:</label>
-                  <input type="submit" name="input" value="AMZN"><br>
-                  <label for="sp">General Electric Company:</label>
-                  <input type="submit" name="input" value="GE"><br>
-                  <label for="sp">Procter & Gamble Co:</label>
-                  <input type="submit" name="input" value="PG"><br>
-                  <label for="sp">Sears Holdings Corp:</label>
-                  <input type="submit" name="input" value="SHLDQ" ><br>
-                  <label for="sp">JCPenney:</label>
-                  <input type="submit" name="input" value="JCP" ><br>
-                  <label for="sp">Federal Home Loan Mortgage Corp:</label>
-                  <input type="submit" name="input" value="FMCC" ><br>
-                  <label for="sp">BlackBerry Ltd:</label>
-                  <input type="submit" name="input" value="BB" ><br>
-                  <label for="sp">Chesapeake Energy:</label>
-                  <input type="submit" name="input" value="CHK" ><br>
-                  <label for="sp">American Axle & Manufacturing:</label>
-                  <input type="submit" name="input" value="AXL" ><br>
-                  <label for="sp">BJ's Restaurants:</label>
-                  <input type="submit" name="input" value="BJRI" ><br>
-                  <label for="sp">GW Pharmaceuticals:</label>
-                  <input type="submit" name="input" value="GWPH" ><br>
-                  <label for="sp">IBM:</label>
-                  <input type="submit" name="input" value="IBM" ><br>
-                  <label for="sp">Carnival Corp:</label>
-                  <input type="submit" name="input" value="CCL" ><br>
-                  <label for="sp">Exxon Mobil Corporation:</label>
-                  <input type="submit" name="input" value="XOM" ><br>
-              </form>
-            <a style="margin-top: 3px" href="/sp"><li class="list-group-item"> S&P 500 (INX) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/nasdaq"><li class="list-group-item"> Nasdaq (IXIC) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/dow"><li class="list-group-item"> Dow Jones (DJI) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/aapl"><li class="list-group-item"> Apple (APPL) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/amzn"><li class="list-group-item"> Amazon (AMZN) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/ge"><li class="list-group-item"> General Electric (GE) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/pg"><li class="list-group-item"> Procter & Gamble Company (PG) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/shldq"><li class="list-group-item"> Sears Holding Group (SHLDQ) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/jcp"><li class="list-group-item"> J.C. Penny (JCP) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/fmcc"><li class="list-group-item"> Freddie Mac (FMCC) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/bb"><li class="list-group-item"> Blackberry (BB) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/chkdg"><li class="list-group-item"> Chesapeake Energy (CHK) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/axl"><li class="list-group-item"> American Axle and Manufacturing (AXL) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span>
-            <a style="margin-top: 3px" href="/bjri"><li class="list-group-item"> BJ's Restaurants (BJRI) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a> </li></a>
-            <a style="margin-top: 3px" href="/gwph"><li class="list-group-item"> GW Pharmaceuticals (GWPH) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/ibm"><li class="list-group-item"> IBM (IBM) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/ccl"><li class="list-group-item"> Carnival Cruises (CCL) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/xom"><li class="list-group-item"> ExxonMobil (XOM) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=SP"><li class="list-group-item"> S&P 500 (INX) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=NASDAQ"><li class="list-group-item"> Nasdaq (IXIC) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=DOW"><li class="list-group-item"> Dow Jones (DJI) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=AAPL"><li class="list-group-item"> Apple (APPL) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=AMZN"><li class="list-group-item"> Amazon (AMZN) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=GE"><li class="list-group-item"> General Electric (GE) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=PG"><li class="list-group-item"> Procter & Gamble Company (PG) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=SHLDQ"><li class="list-group-item"> Sears Holding Group (SHLDQ) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=JCP"><li class="list-group-item"> J.C. Penny (JCP) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=FMCC"><li class="list-group-item"> Freddie Mac (FMCC) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=BB"><li class="list-group-item"> Blackberry (BB) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=CHK"><li class="list-group-item"> Chesapeake Energy (CHK) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=AXL"><li class="list-group-item"> American Axle and Manufacturing (AXL) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=BRJRI"><li class="list-group-item"> BJ's Restaurants (BJRI) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=GWPH"><li class="list-group-item"> GW Pharmaceuticals (GWPH) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=IBM"><li class="list-group-item"> IBM (IBM) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=CCL"><li class="list-group-item"> Carnival Cruises (CCL) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/item?kind=stocks&name=XOM"><li class="list-group-item"> ExxonMobil (XOM) <span style="margin-left: 15px" class="badge badge-secondary">Stocks</span> </li></a>
           </ul>
         </div>
         <div class="col-md-2"></div>
