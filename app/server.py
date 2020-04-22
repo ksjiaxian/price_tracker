@@ -56,6 +56,10 @@ def stocks():
 def commodities():
     return render_template("commodities.html")
 
+@app.route("/explore", methods=['GET', 'POST'])
+def explore():
+    return render_template("explore.html")
+
 
 @app.route("/cart")
 def cart():
