@@ -111,6 +111,30 @@ JOIN Inflation i ON d.Year = i.Year)
 SELECT GREATEST(v.adjusted_valentino, s.adjusted_sears) as higher_value
 FROM Sears s, Valentino v;
 
+9. If I invested $50,000 in _____ in 2000, how much would it be worth now? (ex: AAPL)
+WITH purchased AS (
+SELECT 50000/s.AAPL as num_shares
+FROM STOCKS s
+WHERE s.dateID = 20000103),
+curr AS (
+SELECT AAPL
+FROM STOCKS
+WHERE dateID = 20200324)
+SELECT purchased.num_shares * curr.AAPL
+FROM purchased, curr;
+
+10. Compare the pre-2008 recession price to the post-2008 recession price (percentage)
+WITH before_rec AS (
+SELECT s.FMCC AS before_price
+FROM STOCKS s
+WHERE s.dateID = 20070907),
+after_rec AS (
+SELECT s.FMCC AS after_price
+FROM STOCKS s
+WHERE dateID = 20090305)
+SELECT after_rec.after_price/before_rec.before_price
+FROM before_rec, after_rec;
+
 Overall Contributions - 
 Varun (47.5%): Obtained all raw data, which included downloading historical data from Yahoo Finance and scraping data for commodities. Also wrote Python scripts to clean all the data and manually cleaned data using Microsoft Excel. Prepared all data for ingestion into AWS DB. 
 Kenneth (47.5%): Assisted with some last-minute data cleaning for ingestion. Handled all of the ingestion process, which included writing DLL statements and configuring DB. Wrote 6/8 SQL queries and collaborated with Varun to adjust some data when ingestion had problems (i.e. changing Date column to dateID). 
