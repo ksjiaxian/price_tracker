@@ -28,12 +28,12 @@ def item():
     if kind == "stocks":
         if name == 'SP' or name == 'NASDAQ' or name == 'DOW': table = 'INDEXES'
         else: table = 'STOCKS'
-        (return_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        (return_name, max_price, min_price, max_date, min_date, data_json, curr_price) = get_data(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
     else:
         table = 'COMMODITIES'
-        (return_name, max_price, min_price, max_date, min_date, data_json) = get_data(name, table)
+        (return_name, max_price, min_price, max_date, min_date, data_json, curr_price) = get_data(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
 
@@ -45,7 +45,8 @@ def item():
                         min=min_price,
                         min_date=min_date,
                         data=data_json,
-                        link=link)
+                        link=link,
+                        curr_price = curr_price)
 
 @app.route("/stocks", methods=['GET', 'POST'])
 def stocks():
@@ -114,13 +115,22 @@ def get_data(item, table_name):
         'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
     max_date = date_prettify([str(i[0]) for i in max_date][0])
 
+    if (table_name == "COMMODITIES"):
+        curr_price = connection.cursor()
+        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
+        curr_price = '$' + [str(i[0]) for i in curr_price][0] 
+    else:
+        curr_price = connection.cursor()
+        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200409')
+        curr_price = '$' + [str(i[0]) for i in curr_price][0] 
+
     data_points = {}
     for i in c:
         data_points[int(i[0])] = i[1]
 
     data_json = json.dumps(data_points)
 
-    return name, max_price, min_price, max_date, min_date, data_json
+    return name, max_price, min_price, max_date, min_date, data_json, curr_price
 
 # This function returns the twitter link for embedding
 def get_twitter_link(item):
