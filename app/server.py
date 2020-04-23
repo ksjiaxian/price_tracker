@@ -115,13 +115,13 @@ def get_data(item, table_name):
         'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
     max_date = date_prettify([str(i[0]) for i in max_date][0])
 
-    if (table_name == "COMMODITIES"):
+    if (table_name == "STOCKS"):
         curr_price = connection.cursor()
-        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
+        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200409')
         curr_price = '$' + [str(i[0]) for i in curr_price][0] 
     else:
         curr_price = connection.cursor()
-        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200409')
+        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
         curr_price = '$' + [str(i[0]) for i in curr_price][0] 
 
     data_points = {}
@@ -163,7 +163,6 @@ def get_twitter_link(item):
                'MARIO': 'NintendoAmerica',
                'POKEMON': 'Pokemon'}
     link = start_of_link + handles[item] + end_of_link
-    print(link)
     return link
 
 def get_item_name(item):
