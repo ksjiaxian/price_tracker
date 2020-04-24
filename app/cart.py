@@ -9,12 +9,19 @@ password = 'password'
 dsn = 'cis550pricetracker.cgcukgcycu5f.us-east-1.rds.amazonaws.com/CIS550DB'
 port = 1512
 
+
 class Cart:
-    # Represents total cash in the bank
-    total_cash = 100000.00
-    # Dictionary of all stocks/items in portfolio
-    # (Share, Date) -> (Number of Shares, Share Price)
-    portfolio = {}
+
+    def __init__(self):
+        # Represents total cash in the bank
+        self.total_cash = 100000.00
+
+        # Dictionary of all stocks/items in portfolio
+        # (Share, Date) -> (Number of Shares, Share Price)
+        portfolio = {}
+        self.portfolio = {}
+
+        print('creating a new cart with $100000 initial amount')
 
     # num_shares - int, share_price (infl. adj) - float, transaction - string "sell/buy"
     # Return True - Transaction successful, total update
@@ -35,7 +42,7 @@ class Cart:
                 print('update')
                 self.total_cash = new_total_cash
                 return True
-    
+
     # share_name - string, share_date - int, num_shares - int, share_price - float
     # Return True - Transaction successful, portfolio update
     # Return False - Transaction unsuccessful, portfolio won't update
@@ -77,7 +84,7 @@ class Cart:
             new_num_shares = curr_num_shares - num_shares
             # Delete key if no shares left
             if new_num_shares == 0:
-                del self.portfolio[key_tuple] 
+                del self.portfolio[key_tuple]
                 return True
             # Update it otherwise 
             else:
@@ -88,12 +95,33 @@ class Cart:
         else:
             return False
 
-
     # Add functions to get total worth and curent worth of portfolio
 
     def returnTotalCash(self):
         return self.total_cash
-    
+
     def returnPortfolio(self):
         return self.portfolio
 
+    def printCart(self):
+        for (share, date), (num_shares, price) in self.portfolio.items():
+            print(str(self.date_prettify(str(date))) + ' ' + share + ': ' + str(num_shares) + ' at ' + str(price))
+
+    def date_prettify(self, date_id):
+        months = {1: 'January',
+                  2: 'February',
+                  3: 'March',
+                  4: 'April',
+                  5: 'May',
+                  6: 'June',
+                  7: 'July',
+                  8: 'August',
+                  9: 'September',
+                  10: 'October',
+                  11: 'November',
+                  12: 'December'}
+        day = datetime.strptime(date_id, '%Y%m%d').day
+        month = months[datetime.strptime(date_id, '%Y%m%d').month]
+        year = datetime.strptime(date_id, '%Y%m%d').year
+        date_pretty = month + ' ' + str(day) + ', ' + str(year)
+        return date_pretty

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import cx_Oracle
 import json
 from datetime import datetime
+from cart import Cart
 
 # database credentials
 username = 'admin'
@@ -15,19 +16,24 @@ app = Flask(__name__)
 name = 'BB'
 table = 'Stocks'
 
+user_cart = Cart()
+
 
 @app.route("/")
 def splash():
     return render_template("splash.html")
 
-@app.route("/item")
+
+@app.route("/item", methods=['GET', 'POST'])
 def item():
     kind = request.args.get('kind')
     name = request.args.get('name')
 
     if kind == "stocks":
-        if name == 'SP' or name == 'NASDAQ' or name == 'DOW': table = 'INDEXES'
-        else: table = 'STOCKS'
+        if name == 'SP' or name == 'NASDAQ' or name == 'DOW':
+            table = 'INDEXES'
+        else:
+            table = 'STOCKS'
         (return_name, max_price, min_price, max_date, min_date, data_json, curr_price) = get_data(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
@@ -37,16 +43,32 @@ def item():
         link = get_twitter_link(name)
         item_name = get_item_name(name)
 
+    if request.method == 'POST':
+        cart = user_cart
+        quantity = request.form['quantity']
+        action_item = request.form['Buy/Sell'].split(';_;')
+        action = action_item[0]
+        item = action_item[1]
+        print(item)
+        if action == 'Buy':
+            print('buying')
+            cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+        else:
+            print('selling')
+            cart.removePortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+        cart.printCart()
+
     return render_template("item.html",
-                        item_name = item_name,
-                        name=name,
-                        max=max_price,
-                        max_date=max_date,
-                        min=min_price,
-                        min_date=min_date,
-                        data=data_json,
-                        link=link,
-                        curr_price = curr_price)
+                           item_name=item_name,
+                           name=name,
+                           max=max_price,
+                           max_date=max_date,
+                           min=min_price,
+                           min_date=min_date,
+                           data=data_json,
+                           link=link,
+                           curr_price=curr_price)
+
 
 @app.route("/stocks", methods=['GET', 'POST'])
 def stocks():
@@ -57,6 +79,7 @@ def stocks():
 def commodities():
     return render_template("commodities.html")
 
+
 @app.route("/explore", methods=['GET', 'POST'])
 def explore():
     return render_template("explore.html")
@@ -64,7 +87,23 @@ def explore():
 
 @app.route("/cart")
 def cart():
-    return render_template("cart.html")
+    cart = user_cart
+    portfolio = cart.portfolio.items()
+    cart_html = ''
+    for (share, share_date), (num_shares, share_price) in portfolio:
+        print(share_date)
+        print(share)
+        print(num_shares)
+        print(share_price)
+        template = '<a style = "margin-top: 3px" href = "/item"> <li class ="list-group-item"> ' \
+                   '{date} : {quantity} shares of {item} at ${price} each <span style="margin-left: 15px" ' \
+                   'class ="badge badge-warning"> Stock </span> </li> </a>'.format(
+            date=date_prettify(str(share_date)),
+            quantity=num_shares, price=share_price,
+            item=share)
+        cart_html += template
+    return render_template("cart.html", cart_html=cart_html)
+
 
 def date_prettify(date_id):
     months = {1: 'January',
@@ -118,11 +157,11 @@ def get_data(item, table_name):
     if (table_name == "STOCKS"):
         curr_price = connection.cursor()
         curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200409')
-        curr_price = '$' + [str(i[0]) for i in curr_price][0] 
+        curr_price = '$' + [str(i[0]) for i in curr_price][0]
     else:
         curr_price = connection.cursor()
         curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
-        curr_price = '$' + [str(i[0]) for i in curr_price][0] 
+        curr_price = '$' + [str(i[0]) for i in curr_price][0]
 
     data_points = {}
     for i in c:
@@ -131,6 +170,7 @@ def get_data(item, table_name):
     data_json = json.dumps(data_points)
 
     return name, max_price, min_price, max_date, min_date, data_json, curr_price
+
 
 # This function returns the twitter link for embedding
 def get_twitter_link(item):
@@ -165,6 +205,7 @@ def get_twitter_link(item):
     link = start_of_link + handles[item] + end_of_link
     return link
 
+
 def get_item_name(item):
     handles = {'SP': 'S&P 500 Index',
                'NASDAQ': 'Nasdaq',
@@ -193,6 +234,7 @@ def get_item_name(item):
                'POKEMON': 'Pokemon FireRed - Game Boy Advance'}
     item_name = handles[item]
     return item_name
+
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True

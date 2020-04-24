@@ -44,10 +44,7 @@
           <h1><strong>Cart</strong></h1>
           <p class="text-muted">The goods you have chosen to save:</p>
           <ul style="margin-top: 10px;" class="list-group">
-            <a style="margin-top: 3px" href="/item"><li class="list-group-item"> Avacados <span style="margin-left: 15px" class="badge badge-warning">Good</span> </li></a>
-            <a style="margin-top: 3px" href="/item"><li class="list-group-item"> S&P 500 <span style="margin-left: 15px" class="badge badge-warning">Index</span> </li></a>
-            <a style="margin-top: 3px" href="/item"><li class="list-group-item"> Sliced Bread <span style="margin-left: 15px" class="badge badge-warning">Good</span> </li></a>
-            <a style="margin-top: 3px" href="/item"><li class="list-group-item"> GOOG <span style="margin-left: 15px" class="badge badge-warning">Stock</span> </li></a>
+            {{ cart_html | safe }}
           </ul>
         </div>
         <div class="col-md-2"></div>

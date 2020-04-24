@@ -117,9 +117,11 @@
           </div>
           <br />
           <h2><strong>Manage</strong></h2>
-          <input style="margin-bottom: 0.5rem" type="number" placeholder="quantity goes here..." />
-          <button class="btn btn-info">Buy Quantity</button>
-          <button class="btn btn-success">Sell Quantity</button>
+             <form method="POST">
+                 <input class = "searchbox" style="margin-bottom: 0.5rem" type="number" placeholder="quantity goes here..." name="quantity"/>
+                 <button class="btn btn-info" name = "Buy/Sell" value="Buy;_;{{item_name}}">Buy Quantity</button>
+                 <button class="btn btn-success" name = "Buy/Sell"  value="Sell;_;{{item_name}}">Sell Quantity</button>
+             </form>
         </div>
       </div>
     </div>
