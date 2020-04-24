@@ -92,21 +92,45 @@
     <div class="container">
       <div class="row" style="margin-top: 3rem;">
         <div class="col-md-3">
-          <a class="twitter-timeline" href={{link}}></a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <a class="twitter-timeline" href={{link}} data-tweet-limit="3"></a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" ></script>
           <br />
         </div>
         <div class="col-md-6">
           <h1><strong>{{item_name}} - {{curr_price}}</strong></h1>
           <div id="chartContainer" style="width: 100%; height: 40vh"></div>
+            <br>
+            <br>
+
         </div>
         <div class="col-md-3">
-          <h2><strong>Quick Stats</strong></h2>
-          <div class="card" style="width: 100%;">
+            <div>
+            <h2><strong>Buy and Sell</strong></h2>
+             <form method="POST">
+                 <input class = "searchbox" style="margin-bottom: 1rem; width: 16rem" type="number" placeholder="Amount" name="quantity"/><br>
+                 <button class="btn btn-info" name = "action" style="width: 7.8rem" value="Buy;_;{{item_name}}">Buy</button>
+                 <button class="btn btn-success" name = "action" style="width: 7.8rem" value="Sell;_;{{item_name}}">Sell</button>
+             </form>
+                </div>
+            <br>
+            <br>
+          <h2><strong>Quick Info</strong></h2>
+
+          <div class="card" style="margin-top: 10px; width: 100%;">
             <div class="card-body">
               <h5 class="card-title">Maximum Price</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{max_date}}</h6>
               <p class="card-text"><strong>{{max}}</strong></p>
-                <p class="card-text">{{max_history}}</p>
+                {% if not max_history %}
+            {% else %}
+              <button data-toggle="collapse" class="btn btn-secondary btn-sm" data-target="#max">Past News</button>
+
+                <div id="max" class="collapse">
+                <br>
+                <p class="card-text" style="font-size:12px">{{max_history}}</p>
+                </div>
+            {% endif %}
+
+
             </div>
           </div>
           <div class="card" style="margin-top: 10px; width: 100%;">
@@ -114,16 +138,68 @@
               <h5 class="card-title">Minimum Price</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{min_date}}</h6>
               <p class="card-text"><strong>{{min}}</strong></p>
-                <p class="card-text">{{min_history}}</p>
+                {% if not min_history %}
+            {% else %}
+                <button data-toggle="collapse" class="btn btn-secondary btn-sm" data-target="#min">Past News</button>
+
+                <div id="min" class="collapse">
+                <br>
+                <p class="card-text" style="font-size:12px">{{min_history}}</p>
+                </div>
+                {% endif %}
             </div>
           </div>
-          <br />
-          <h2><strong>Manage</strong></h2>
+
+            {% if not recent_max %}
+        <div>
+            <br>
+            <br>
+            <h2><strong>Recent Extrema</strong></h2>
              <form method="POST">
-                 <input class = "searchbox" style="margin-bottom: 0.5rem" type="number" placeholder="quantity goes here..." name="quantity"/>
-                 <button class="btn btn-info" name = "Buy/Sell" value="Buy;_;{{item_name}}">Buy Quantity</button>
-                 <button class="btn btn-success" name = "Buy/Sell"  value="Sell;_;{{item_name}}">Sell Quantity</button>
+                 <input class = "searchbox" style="margin-bottom: 1rem; width: 16rem" type="number" placeholder="YYYYMMDD" name="oldest_date"/><br>
+                 <button class="btn btn-outline-success" name = "action" style="width: 16rem" value="date_entry">Enter</button>
              </form>
+
+                </div>
+        {% else %}
+            <div class="card" style="margin-top: 10px; width: 100%;">
+            <div class="card-body">
+              <h5 class="card-title">Recent Maximum Price</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{recent_max_date}}</h6>
+              <p class="card-text"><strong>{{recent_max}}</strong></p>
+                {% if not recent_max_history %}
+            {% else %}
+              <button data-toggle="collapse" class="btn btn-secondary btn-sm" data-target="#recent_max">Past News</button>
+
+                <div id="recent_max" class="collapse">
+                <br>
+                <p class="card-text" style="font-size:12px">{{recent_max_history}}</p>
+                </div>
+                {% endif %}
+            </div>
+          </div>
+            <div class="card" style="margin-top: 10px; width: 100%;">
+            <div class="card-body">
+              <h5 class="card-title">Recent Minimum Price</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{recent_min_date}}</h6>
+              <p class="card-text"><strong>{{recent_min}}</strong></p>
+                {% if not recent_min_history %}
+            {% else %}
+                <button data-toggle="collapse" class="btn btn-secondary btn-sm" data-target="#recent_min">Past News</button>
+
+                <div id="recent_min" class="collapse">
+                <br>
+                <p class="card-text" style="font-size:12px">{{recent_min_history}}</p>
+                </div>
+                {% endif %}
+            </div>
+          </div>
+                <br>
+                <form method="POST">
+                <button class="btn btn-outline-danger" name = "action" style="width: 16rem" value="clear">Clear</button>
+                </form>
+        {% endif %}
+          <br />
         </div>
       </div>
     </div>

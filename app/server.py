@@ -29,24 +29,47 @@ def item():
     kind = request.args.get('kind')
     name = request.args.get('name')
 
+    recent_max_price = ''
+    recent_max_date = ''
+    recent_min_price = ''
+    recent_min_date = ''
+    recent_max_history = ''
+    recent_min_history = ''
+
     if kind == "stocks":
         if name == 'SP' or name == 'NASDAQ' or name == 'DOW':
             table = 'INDEXES'
         else:
             table = 'STOCKS'
-        (return_name, max_price, min_price, max_date, min_date, max_history, min_history,  data_json, curr_price) = get_data(name, table)
+        (return_name, data_json) = get_data(name, table)
+        (_, max_price, min_price, max_date, min_date, max_history, min_history, curr_price) = get_quick_info(name,table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
     else:
         table = 'COMMODITIES'
-        (return_name, max_price, min_price, max_date, min_date, max_history, min_history,  data_json, curr_price) = get_data(name, table)
+        (return_name, data_json) = get_data(name, table)
+        (_, max_price, min_price, max_date, min_date, max_history, min_history, curr_price) = get_quick_info(name,table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form['action'] == 'date_entry':
+        try :
+            print('user typed in ' + request.form['oldest_date'])
+            (_, recent_max_price, recent_min_price, recent_max_date, recent_min_date, recent_max_history, recent_min_history,_) = get_quick_info(name, table, request.form['oldest_date'])
+        except:
+            pass
+    elif request.method == 'POST' and request.form['action'] == 'clear':
+        print('clearing recent prices')
+        recent_max_price = ''
+        recent_max_date = ''
+        recent_min_price = ''
+        recent_min_date = ''
+        recent_max_history = ''
+        recent_min_history = ''
+    elif request.method == 'POST':
         cart = user_cart
         quantity = request.form['quantity']
-        action_item = request.form['Buy/Sell'].split(';_;')
+        action_item = request.form['action'].split(';_;')
         action = action_item[0]
         item = action_item[1]
         print(item)
@@ -58,6 +81,9 @@ def item():
             cart.removePortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
         cart.printCart()
 
+
+
+
     return render_template("item.html",
                            item_name=item_name,
                            name=name,
@@ -65,8 +91,14 @@ def item():
                            max_date=max_date,
                            min=min_price,
                            min_date=min_date,
-                           max_history = max_history,
-                           min_history = min_history,
+                           max_history=max_history,
+                           min_history=min_history,
+                           recent_max=recent_max_price,
+                           recent_max_date=recent_max_date,
+                           recent_min=recent_min_price,
+                           recent_min_date=recent_min_date,
+                           recent_max_history=recent_max_history,
+                           recent_min_history=recent_min_history,
                            data=data_json,
                            link=link,
                            curr_price=curr_price)
@@ -140,21 +172,48 @@ def get_data(item, table_name):
     c = connection.cursor()
     c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s')
 
+    data_points = {}
+    for i in c:
+        data_points[int(i[0])] = i[1]
+
+    data_json = json.dumps(data_points)
+
+    return name, data_json
+
+
+def get_quick_info(item, table_name, oldest_date=None):
+    oldest_date_condition = ''
+    if not (oldest_date is None):
+        oldest_date_condition += ' AND dateID >= ' + str(oldest_date)
+
+    connection = None
+    try:
+        connection = cx_Oracle.connect(username, password, dsn)
+
+    except cx_Oracle.Error as error:
+        print(error)
+        connection.close()
+
+    c = connection.cursor()
+    c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s')
+
     min_price = connection.cursor()
-    min_price.execute('SELECT MIN( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0')
+    min_price.execute(
+        'SELECT MIN( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition)
     min_price = '$' + [str(i[0]) for i in min_price][0]
     min_date = connection.cursor()
     min_date.execute(
-        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MIN(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
+        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MIN(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition + ')'+ oldest_date_condition)
     min_date = [str(i[0]) for i in min_date][0]
     min_date_pretty = date_prettify(min_date)
 
     max_price = connection.cursor()
-    max_price.execute('SELECT MAX( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0')
+    max_price.execute(
+        'SELECT MAX( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition)
     max_price = '$' + [str(i[0]) for i in max_price][0]
     max_date = connection.cursor()
     max_date.execute(
-        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
+        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0 ' + oldest_date_condition + ')' + oldest_date_condition)
     max_date = [str(i[0]) for i in max_date][0]
     max_date_pretty = date_prettify(max_date)
 
@@ -170,35 +229,24 @@ def get_data(item, table_name):
     max_history = connection.cursor()
     max_history.execute('Select history as new_today From History h Where h.dateid = ' + max_date)
     max_history = max_history.fetchone()
-    # print(max_history.fetchone())
-    # if max_history.rowcount > 0:
-    #     print([str(i[0]) for i in max_history][0])
 
     min_history = connection.cursor()
     min_history.execute('Select history as new_today From History h Where h.dateid = ' + min_date)
     min_history = min_history.fetchone()
-    # print(max_history)
-    # print(min_history)
 
     try:
         max_history = max_history[0]
-    except:
+    except (cx_Oracle.DatabaseError, TypeError) as e:
         print('no max history')
         max_history = ''
 
     try:
         min_history = min_history[0]
-    except:
+    except (cx_Oracle.DatabaseError, TypeError) as e:
         print('no min history')
         min_history = ''
 
-    data_points = {}
-    for i in c:
-        data_points[int(i[0])] = i[1]
-
-    data_json = json.dumps(data_points)
-
-    return name, max_price, min_price, max_date_pretty, min_date_pretty, max_history, min_history, data_json, curr_price
+    return name, max_price, min_price, max_date_pretty, min_date_pretty, max_history, min_history, curr_price
 
 
 # This function returns the twitter link for embedding
