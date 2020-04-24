@@ -34,12 +34,12 @@ def item():
             table = 'INDEXES'
         else:
             table = 'STOCKS'
-        (return_name, max_price, min_price, max_date, min_date, data_json, curr_price) = get_data(name, table)
+        (return_name, max_price, min_price, max_date, min_date, max_history, min_history,  data_json, curr_price) = get_data(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
     else:
         table = 'COMMODITIES'
-        (return_name, max_price, min_price, max_date, min_date, data_json, curr_price) = get_data(name, table)
+        (return_name, max_price, min_price, max_date, min_date, max_history, min_history,  data_json, curr_price) = get_data(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
 
@@ -65,6 +65,8 @@ def item():
                            max_date=max_date,
                            min=min_price,
                            min_date=min_date,
+                           max_history = max_history,
+                           min_history = min_history,
                            data=data_json,
                            link=link,
                            curr_price=curr_price)
@@ -144,7 +146,8 @@ def get_data(item, table_name):
     min_date = connection.cursor()
     min_date.execute(
         'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MIN(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
-    min_date = date_prettify([str(i[0]) for i in min_date][0])
+    min_date = [str(i[0]) for i in min_date][0]
+    min_date_pretty = date_prettify(min_date)
 
     max_price = connection.cursor()
     max_price.execute('SELECT MAX( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0')
@@ -152,7 +155,8 @@ def get_data(item, table_name):
     max_date = connection.cursor()
     max_date.execute(
         'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0)')
-    max_date = date_prettify([str(i[0]) for i in max_date][0])
+    max_date = [str(i[0]) for i in max_date][0]
+    max_date_pretty = date_prettify(max_date)
 
     if (table_name == "STOCKS"):
         curr_price = connection.cursor()
@@ -163,13 +167,38 @@ def get_data(item, table_name):
         curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
         curr_price = '$' + [str(i[0]) for i in curr_price][0]
 
+    max_history = connection.cursor()
+    max_history.execute('Select history as new_today From History h Where h.dateid = ' + max_date)
+    max_history = max_history.fetchone()
+    # print(max_history.fetchone())
+    # if max_history.rowcount > 0:
+    #     print([str(i[0]) for i in max_history][0])
+
+    min_history = connection.cursor()
+    min_history.execute('Select history as new_today From History h Where h.dateid = ' + min_date)
+    min_history = min_history.fetchone()
+    # print(max_history)
+    # print(min_history)
+
+    try:
+        max_history = max_history[0]
+    except:
+        print('no max history')
+        max_history = ''
+
+    try:
+        min_history = min_history[0]
+    except:
+        print('no min history')
+        min_history = ''
+
     data_points = {}
     for i in c:
         data_points[int(i[0])] = i[1]
 
     data_json = json.dumps(data_points)
 
-    return name, max_price, min_price, max_date, min_date, data_json, curr_price
+    return name, max_price, min_price, max_date_pretty, min_date_pretty, max_history, min_history, data_json, curr_price
 
 
 # This function returns the twitter link for embedding
