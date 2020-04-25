@@ -4,11 +4,15 @@
 --what was the price of a good on a day?--
 Select history as new_today
 From History h
-Where h.dateid = 20080808;
+Where h.dateid = 19970522;
 
-SELECT AAPL 
+SELECT MIN( AMZN ) FROM STOCKS s WHERE s.AMZN > 0 AND dateID >= 20200314;
+SELECT AMZN FROM Stocks s WHERE s.dateID = 20011105;
+
+SELECT s.chk
 FROM Stocks s 
-WHERE s.dateID = 20200324;
+WHERE s.dateID = 20100326;
+
 /* we can replace Oil with another good and the data id with another date. */
 
 -- get the price adjusted for inflation (i.e. how much would this cost in 1980?):
@@ -42,36 +46,7 @@ WHERE dateID >= 19801212) a
 JOIN Dates d ON a.dateID = d.dateID
 JOIN Inflation i ON d.Year = i.Year);
 
---given a day, was this a good day?--
---suppose that in our application, we already have an average--
---good days are where everything is above average--
--- this will be implented later --
 
---SELECT 1
---FROM Avocado a 
---JOIN Oil o ON a.dateID = o.dateID
---JOIN Bitcoin b ON o.dateID = b.dateID
---JOIN Stocks s ON b.dateID = s.dateID
---WHERE o.dateID = 19991231
---AND a.price > avocado_average
---AND o.price > oil_average
---AND b.price > bitcoin_average
---AND s.super_stock_index > 0
-
---given a day, was this a bad day?--
---bad days are where everything is below average--
--- this will be implented later --
-
---SELECT -1
---FROM Avocado a 
---JOIN Oil o ON a.dateID = o.dateID
---JOIN Bitcoin b ON o.dateID = b.dateID
---JOIN Stocks s ON b.dateID = s.dateID
---WHERE o.dateID = 19991231
---AND a.price < avocado_average
---AND o.price < oil_average
---AND b.price < bitcoin_average
---AND s.super_stock_index < 0;
 
 
 --in the last x days, have prices in my bundle of stocks been trending down or up?--
