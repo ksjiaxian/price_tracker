@@ -50,7 +50,7 @@
       //Better to construct options first and then pass it as a parameter
       var options = {
         zoomEnabled: true,
-        animationEnabled: true,
+        animationEnabled: {{ first_time | safe }},
         axisY: {
           includeZero: false,
           gridThickness: 0
@@ -107,6 +107,7 @@
             <h2><strong>Buy and Sell</strong></h2>
              <form method="POST">
                  <input class = "searchbox" style="margin-bottom: 1rem; width: 16rem" type="number" placeholder="Amount" name="quantity"/><br>
+                 <input class = "searchbox" style="margin-bottom: 1rem; width: 16rem" type="number" placeholder="YYYYMMDD" name="pretend_date"/><br>
                  <button class="btn btn-info" name = "action" style="width: 7.8rem" value="Buy;_;{{item_name}}">Buy</button>
                  <button class="btn btn-success" name = "action" style="width: 7.8rem" value="Sell;_;{{item_name}}">Sell</button>
              </form>

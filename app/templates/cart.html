@@ -7,8 +7,107 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 
     <title>Price Tracker</title>
+
+    <script>
+      window.onload = function () {
+
+      var data1 = [];
+      var dataSeries1 = { type: "line", axisYType: "secondary", name: "Total Cart Value", showInLegend: true, yValueFormatString: "$##,###.##"};
+      var dataPoints1 = [];
+      var flask_output1 = {{ value_by_date | safe }};
+      for (const date_id1 in flask_output1) {
+          if (flask_output1[date_id1] < 0.01 ) {
+              continue;
+          }
+          var curr_date1 = date_id1;
+          var day1 = date_id1 % 100;
+          curr_date1 = Math.floor(date_id1/100);
+          var month1= curr_date1 % 100;
+          var year1 = Math.floor(date_id1/10000);
+
+        dataPoints1.push({
+          x: new Date(year1, month1-1, day1), // java script months are 0 indexed for some reason :/
+          y: flask_output1[date_id1],
+        });
+      }
+      dataSeries1.dataPoints = dataPoints1;
+
+      //Better to construct options first and then pass it as a parameter
+      var options1 = {
+        zoomEnabled: true,
+        animationEnabled: false,
+        axisY: {
+          includeZero: false,
+          gridThickness: 0
+        },
+        data: data1
+      };
+
+      var count = Object.keys({{ cart_data | safe }}).length;
+      console.log(count);
+
+      var data = [];
+      var cart_data = {{ cart_data | safe }};
+      var start_dates = {{ start_dates | safe }};
+      var names = {{ names | safe }};
+      for (var i = 0; i < count; i++) {
+          item_data = cart_data[i]
+          var dataSeries = { type: "line", axisYType: "primary", name: names[i], showInLegend: true, yValueFormatString: "$##,###.##"};
+          var dataPoints = [];
+          var color ="#"+((1<<24)*Math.random()|0).toString(16);
+          for (const date_id in item_data) {
+              if (item_data[date_id] < 0.01 || date_id < start_dates[i]) {
+                  continue;
+              }
+
+              var curr_date = date_id;
+              var day = date_id % 100;
+              curr_date = Math.floor(date_id / 100);
+              var month = curr_date % 100;
+              var year = Math.floor(date_id / 10000);
+
+              dataPoints.push({
+                  x: new Date(year, month - 1, day), // java script months are 0 indexed for some reason :/
+                  y: item_data[date_id],
+              });
+          }
+          dataSeries.dataPoints = dataPoints;
+          data.push(dataSeries)
+      }
+      data.push(dataSeries1)
+
+      //Better to construct options first and then pass it as a parameter
+      var options = {
+        zoomEnabled: true,
+        animationEnabled: false,
+        axisY: {
+            gridThickness: 0,
+          includeZero: false
+        },
+        legend: {
+            cursor: "pointer",
+            verticalAlign: "top",
+            horizontalAlign: "center",
+            dockInsidePlotArea: true,
+        },
+        toolTip: {
+            shared: true
+        },
+        data: data
+      };
+
+      $("#chartContainer").CanvasJSChart(options);
+
+      }
+
+
+    </script>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
@@ -16,7 +115,7 @@
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-    
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
@@ -36,27 +135,49 @@
     </nav>
 
     <div class="container">
-      <div class="row">
-        <div class="col-md-2"></div>
+      <div class="row" style="margin-top: 3rem;">
         <div class="col-md-8">
-          <br /><br />
-          
-          <h1><strong>Cart</strong></h1>
-          <p class="text-muted">The goods you have chosen to save:</p>
-          <ul style="margin-top: 10px;" class="list-group">
-            {% if not cart_html %}
-              <small> You do not have anything in your cart. </small>
-            {% else %}
-              {{ cart_html | safe }}
-            {% endif %}
-          </ul>
+
+          <h1><strong>Cart - ${{ cart_value }}</strong></h1>
+        <br>
+          <h5>Total Spent: <strong>${{ cart_price }} out of $100000</strong></h5>
+        <br>
+          <div id="chartContainer" style="width: 100%; height: 40vh"></div>
+        <br>
+
+
+        <div class="col-md-16">
+         <p class="text-muted">Content History:</p>
+        <ul style="margin-top: 10px;" class="list-group">
+          {% if not cart_html %}
+            <small> You do not have anything in your cart. </small>
+          {% else %}
+            {{ cart_html | safe }}
+          {% endif %}
+        </ul>
         </div>
-        <div class="col-md-2"></div>
       </div>
-    </div>    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+      <div class="col-md-4">
+        <br /> <br /> <br />
+        <h2><strong>Quick Info</strong></h2>
+        <div class="card" style="width: 100%;">
+          <div class="card-body">
+            <h5 class="card-title">Best Investment</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ best }}</h6>
+            <p class="card-text"><strong>${{ best_price_difference }}</strong></p>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 10px; width: 100%;">
+          <div class="card-body">
+            <h5 class="card-title">Worst Investment</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ worst }}</h6>
+            <p class="card-text"><strong>${{ worst_price_difference }}</strong></p>
+          </div>
+        </div>
+        <br />
+      </div>
+    </div>
   </body>
 </html>

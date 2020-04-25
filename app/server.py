@@ -28,6 +28,7 @@ def splash():
 def item():
     kind = request.args.get('kind')
     name = request.args.get('name')
+    first_time = 'true'
 
     recent_max_price = ''
     recent_max_date = ''
@@ -41,21 +42,25 @@ def item():
             table = 'INDEXES'
         else:
             table = 'STOCKS'
-        (return_name, data_json) = get_data(name, table)
-        (_, max_price, min_price, max_date, min_date, max_history, min_history, curr_price) = get_quick_info(name,table)
+        (return_name, data) = get_data(name, table)
+        (_, max_price, min_price, max_date, min_date, max_history, min_history) = get_quick_info(name, table)
+        curr_price = get_curr_price(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
     else:
         table = 'COMMODITIES'
-        (return_name, data_json) = get_data(name, table)
-        (_, max_price, min_price, max_date, min_date, max_history, min_history, curr_price) = get_quick_info(name,table)
+        (return_name, data) = get_data(name, table)
+        (_, max_price, min_price, max_date, min_date, max_history, min_history) = get_quick_info(name, table)
+        curr_price = get_curr_price(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
 
     if request.method == 'POST' and request.form['action'] == 'date_entry':
-        try :
+        first_time = 'false'
+        try:
             print('user typed in ' + request.form['oldest_date'])
-            (_, recent_max_price, recent_min_price, recent_max_date, recent_min_date, recent_max_history, recent_min_history,_) = get_quick_info(name, table, request.form['oldest_date'])
+            (_, recent_max_price, recent_min_price, recent_max_date, recent_min_date, recent_max_history,
+             recent_min_history, _) = get_quick_info(name, table, request.form['oldest_date'])
         except:
             pass
     elif request.method == 'POST' and request.form['action'] == 'clear':
@@ -66,23 +71,29 @@ def item():
         recent_min_date = ''
         recent_max_history = ''
         recent_min_history = ''
+        first_time = 'false'
     elif request.method == 'POST':
         cart = user_cart
         quantity = request.form['quantity']
         action_item = request.form['action'].split(';_;')
         action = action_item[0]
         item = action_item[1]
+        first_time = 'false'
         print(item)
         if action == 'Buy':
             print('buying')
-            cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+            if request.form['pretend_date'] == '':
+                cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+            else:
+                try:
+                    cart.addPortfolio(item, request.form['pretend_date'], int(quantity), float(get_price_by_date(get_ticker(item), get_table_name(item), request.form['pretend_date'])[1:]))
+                except:
+                    print('error adding item to cart: check the date')
+                    cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity),float(curr_price[1:]))
         else:
             print('selling')
             cart.removePortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
         cart.printCart()
-
-
-
 
     return render_template("item.html",
                            item_name=item_name,
@@ -99,7 +110,8 @@ def item():
                            recent_min_date=recent_min_date,
                            recent_max_history=recent_max_history,
                            recent_min_history=recent_min_history,
-                           data=data_json,
+                           first_time = first_time,
+                           data=json.dumps(data),
                            link=link,
                            curr_price=curr_price)
 
@@ -123,20 +135,68 @@ def explore():
 def cart():
     cart = user_cart
     portfolio = cart.portfolio.items()
-    cart_html = ''
+    cart_html = []
+    purchase_price = 0
+    cart_value = 0
+    cart_data = []
+    start_dates = []
+    names = []
+    best = ''
+    worst = ''
+    best_price_difference = 0
+    worst_price_difference = 100000
+    value_by_date = {}
     for (share, share_date), (num_shares, share_price) in portfolio:
-        print(share_date)
-        print(share)
-        print(num_shares)
-        print(share_price)
+        purchase_price += num_shares * share_price
+        current_price = float(get_curr_price(get_ticker(share), get_table_name(share))[1:])
+        cart_value += num_shares * current_price
         template = '<a style = "margin-top: 3px" href = "/item"> <li class ="list-group-item"> ' \
                    '{date} : {quantity} shares of {item} at ${price} each <span style="margin-left: 15px" ' \
                    'class ="badge badge-warning"> Stock </span> </li> </a>'.format(
             date=date_prettify(str(share_date)),
             quantity=num_shares, price=share_price,
             item=share)
-        cart_html += template
-    return render_template("cart.html", cart_html=cart_html)
+        cart_html.append(template)
+        (return_name, data) = get_data(get_ticker(share), get_table_name(share), share_date)
+        price_difference = current_price - share_price
+        if price_difference > best_price_difference:
+            best = share
+            best_price_difference = price_difference
+        if price_difference < worst_price_difference:
+            worst = share
+            worst_price_difference = price_difference
+        cart_data.append(data)
+        start_dates.append(share_date)
+        names.append(get_ticker(share))
+
+        for d, price in data.items():
+            if d in value_by_date:
+                value_by_date[d] += num_shares *price
+            else:
+                value_by_date[d] = num_shares *price
+
+    value_by_date = json.dumps(value_by_date)
+
+    cart_html = sorted(cart_html)
+    cart_data = json.dumps(cart_data)
+    start_dates = json.dumps(start_dates)
+    names = json.dumps(names)
+
+    (return_name, data_json) = get_data('AAPL', 'Stocks')
+
+    return render_template("cart.html",
+                           cart_price=round(purchase_price,2),
+                           cart_value=round(cart_value,2),
+                           value_by_date = value_by_date,
+                           data = data_json,
+                           names = names,
+                           best = best,
+                           worst = worst,
+                           best_price_difference = round(best_price_difference, 2),
+                           worst_price_difference = round(worst_price_difference, 2),
+                           start_dates = start_dates,
+                           cart_data = cart_data,
+                           cart_html=''.join(cart_html))
 
 
 def date_prettify(date_id):
@@ -160,7 +220,11 @@ def date_prettify(date_id):
 
 
 # this function gets the data of a stock, commodity, or index given its type and name
-def get_data(item, table_name):
+def get_data(item, table_name, date = None):
+    oldest_date_condition = ''
+    if not (date is None):
+        oldest_date_condition += ' WHERE dateID >= ' + str(date)
+
     connection = None
     try:
         connection = cx_Oracle.connect(username, password, dsn)
@@ -170,15 +234,52 @@ def get_data(item, table_name):
         connection.close()
 
     c = connection.cursor()
-    c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s')
+    c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s' + oldest_date_condition)
+
 
     data_points = {}
     for i in c:
         data_points[int(i[0])] = i[1]
 
-    data_json = json.dumps(data_points)
+    return name, data_points
 
-    return name, data_json
+
+def get_curr_price(item, table_name):
+    connection = None
+    try:
+        connection = cx_Oracle.connect(username, password, dsn)
+
+    except cx_Oracle.Error as error:
+        print(error)
+        connection.close()
+
+    if table_name == "STOCKS":
+        curr_price = connection.cursor()
+        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200409')
+        curr_price = '$' + [str(i[0]) for i in curr_price][0]
+    else:
+        curr_price = connection.cursor()
+        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
+        curr_price = '$' + [str(i[0]) for i in curr_price][0]
+
+    return curr_price
+
+
+def get_price_by_date(item, table_name, date):
+    connection = None
+    try:
+        connection = cx_Oracle.connect(username, password, dsn)
+
+    except cx_Oracle.Error as error:
+        print(error)
+        connection.close()
+
+    price = connection.cursor()
+    print('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = ' + date)
+    price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = ' + date)
+    price = '$' + [str(i[0]) for i in price][0]
+
+    return price
 
 
 def get_quick_info(item, table_name, oldest_date=None):
@@ -203,7 +304,7 @@ def get_quick_info(item, table_name, oldest_date=None):
     min_price = '$' + [str(i[0]) for i in min_price][0]
     min_date = connection.cursor()
     min_date.execute(
-        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MIN(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition + ')'+ oldest_date_condition)
+        'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MIN(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition + ')' + oldest_date_condition)
     min_date = [str(i[0]) for i in min_date][0]
     min_date_pretty = date_prettify(min_date)
 
@@ -216,15 +317,6 @@ def get_quick_info(item, table_name, oldest_date=None):
         'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0 ' + oldest_date_condition + ')' + oldest_date_condition)
     max_date = [str(i[0]) for i in max_date][0]
     max_date_pretty = date_prettify(max_date)
-
-    if (table_name == "STOCKS"):
-        curr_price = connection.cursor()
-        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200409')
-        curr_price = '$' + [str(i[0]) for i in curr_price][0]
-    else:
-        curr_price = connection.cursor()
-        curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
-        curr_price = '$' + [str(i[0]) for i in curr_price][0]
 
     max_history = connection.cursor()
     max_history.execute('Select history as new_today From History h Where h.dateid = ' + max_date)
@@ -246,7 +338,7 @@ def get_quick_info(item, table_name, oldest_date=None):
         print('no min history')
         min_history = ''
 
-    return name, max_price, min_price, max_date_pretty, min_date_pretty, max_history, min_history, curr_price
+    return name, max_price, min_price, max_date_pretty, min_date_pretty, max_history, min_history
 
 
 # This function returns the twitter link for embedding
@@ -283,6 +375,35 @@ def get_twitter_link(item):
     return link
 
 
+def get_table_name(item):
+    tables = {'S&P 500 Index': 'Indexes',
+              'Nasdaq': 'Indexes',
+              'Dow Jones Industrial Average': 'Indexes',
+              'Apple': 'Stocks',
+              'Amazon': 'Stocks',
+              'General Electric': 'Stocks',
+              'Procter & Gamble': 'Stocks',
+              'Sears Holdings Corporation': 'Stocks',
+              'J.C. Penney': 'Stocks',
+              'The Federal Home Loan Mortgage Corporation': 'Stocks',
+              'BlackBerry': 'Stocks',
+              'Chesapeake Energy': 'Stocks',
+              'American Axle & Manufacturing': 'Stocks',
+              'BJ\'s Restaurants': 'Stocks',
+              'GW Pharmaceuticals': 'Stocks',
+              'IBM': 'Stocks',
+              'Carnival Cruise Line': 'Stocks',
+              'Exxon Mobil Corporation': 'Stocks',
+              'Gold': 'Stocks',
+              'Oil': 'Stocks',
+              'T206 Honus Wagner Baseball Card': 'Stocks',
+              'Ty Beanie Baby - Valentino the Bear': 'Stocks',
+              '1939 Alfa Romeo 8C 2900B Lungo Spider': 'Stocks',
+              'Super Mario 64 - Nintendo 64': 'Stocks',
+              'Pokemon FireRed - Game Boy Advance': 'Stocks'}
+    return tables[item]
+
+
 def get_item_name(item):
     handles = {'SP': 'S&P 500 Index',
                'NASDAQ': 'Nasdaq',
@@ -313,7 +434,45 @@ def get_item_name(item):
     return item_name
 
 
+def get_ticker(item):
+    handles = {'S&P 500 Index': 'SP',
+               'Nasdaq': 'NASDAQ',
+               'Dow Jones Industrial Average': 'DOW',
+               'Apple': 'AAPL',
+               'Amazon': 'AMZN',
+               'General Electric': 'GE',
+               'Procter & Gamble': 'PG',
+               'Sears Holdings Corporation': 'SHLDQ',
+               'J.C. Penney': 'JCP',
+               'The Federal Home Loan Mortgage Corporation': 'FMCC',
+               'BlackBerry': 'BB',
+               'Chesapeake Energy': 'CHK',
+               'American Axle & Manufacturing': 'AXL',
+               'BJ\'s Restaurants': 'BJRI',
+               'GW Pharmaceuticals': 'GWPH',
+               'IBM': 'IBM',
+               'Carnival Cruise Line': 'CCL',
+               'Exxon Mobil Corporation': 'XOM',
+               'Gold': 'GOLD',
+               'Oil': 'OIL',
+               'T206 Honus Wagner Baseball Card': 'WAGNER',
+               'Ty Beanie Baby - Valentino the Bear': 'VALENTINO',
+               '1939 Alfa Romeo 8C 2900B Lungo Spider': 'ROMEO',
+               'Super Mario 64 - Nintendo 64': 'MARIO',
+               'Pokemon FireRed - Game Boy Advance': 'POKEMON'}
+    try:
+        return handles[item]
+    except:
+        return None
+
+
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
+    # this will be a hardcoded example purchase history
+    cart = user_cart
+    cart.addPortfolio("Apple", str(20010521), 5, 1.46)
+    cart.addPortfolio("BlackBerry", str(20060605), 14, 21.73)
+    cart.addPortfolio("Exxon Mobil Corporation", str(20150804), 32, 63.71)
+    cart.addPortfolio("Chesapeake Energy", str(20100326), 27, 19.51)
     app.run(port=8000, debug=True)
