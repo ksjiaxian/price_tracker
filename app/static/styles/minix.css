@@ -16,7 +16,6 @@
 }
 
 html {
-  background: linear-gradient(45deg, #DE6262 10%, #FFB88C 90%);
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   height: 100vh;
 }
@@ -27,6 +26,7 @@ img {
 }
 
 .card-container {
+  -moz-perspective: 1000;
   -webkit-perspective: 1000;
           perspective: 1000;
   margin: 0 auto 50px;
@@ -34,6 +34,7 @@ img {
 }
 
 .front, .back {
+  -moz-backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
   position: absolute;
@@ -43,22 +44,27 @@ img {
   left: 0;
   padding: 30px;
   box-sizing: border-box;
+  -moz-transition-delay: 0.15s;
   -webkit-transition-delay: 0.15s;
           transition-delay: 0.15s;
+  -moz-transition: 0;
   -webkit-transition: 0;
   transition: 0;
 }
 
 .front {
+  -moz-transform: rotateY(0deg);
   -webkit-transform: rotateY(0deg);
           transform: rotateY(0deg);
 }
 
 .back {
+  -moz-transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
           transform: rotateY(180deg);
   opacity: 0;
   padding-top: 60px;
+  -moz-backface-visibility: visible;
   -webkit-backface-visibility: visible;
           backface-visibility: visible;
   background: #333741;
@@ -73,12 +79,15 @@ img {
   border-radius: 5px;
   box-shadow: 0 40px 110px rgba(0, 0, 0, 0.45);
   overflow: hidden;
+  -moz-transition: 0.5s;
   -webkit-transition: 0.5s;
   transition: 0.5s;
+  -moz-transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
           transform-style: preserve-3d;
 }
 .card:hover {
+  -moz-transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
           transform: rotateY(180deg);
 }
@@ -90,11 +99,14 @@ img {
 }
 
 .sub-title {
-  color: #DE6262;
+  color: #25cb9b;
+  -moz-animation: slide-in 0.75s;
   -webkit-animation: slide-in 0.75s;
           animation: slide-in 0.75s;
+  -moz-animation: slide-in 0.75s cubic-bezier(0.625, 0.075, 0.11, 1.165);        
   -webkit-animation: slide-in 0.75s cubic-bezier(0.625, 0.075, 0.11, 1.165);
           animation: slide-in 0.75s cubic-bezier(0.625, 0.075, 0.11, 1.165);
+  -moz-animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
   -webkit-animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
           animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
   font-size: 18px;
@@ -104,10 +116,13 @@ img {
 
 .title {
   color: #333741;
+  -moz-animation: slide-in-slow 0.75s;
   -webkit-animation: slide-in-slow 0.75s;
           animation: slide-in-slow 0.75s;
+  -moz-animation: slide-in-slow 0.75s cubic-bezier(0.625, 0.075, 0.11, 1.165);
   -webkit-animation: slide-in-slow 0.75s cubic-bezier(0.625, 0.075, 0.11, 1.165);
           animation: slide-in-slow 0.75s cubic-bezier(0.625, 0.075, 0.11, 1.165);
+  -moz-animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
   -webkit-animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
           animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
   font-size: 30px;
@@ -116,7 +131,7 @@ img {
 }
 
 .synopsis {
-  color: #DE6262;
+  color: #25cb9b;
   font-size: 27px;
   font-weight: 600;
   margin: 0 0 15px;
@@ -137,6 +152,7 @@ p {
   font-size: 17px;
   padding: 8px 20px 9px 15px;
   color: #FFB88C;
+  -moz-transition: 0.5s;
   -webkit-transition: 0.5s;
   transition: 0.5s;
   margin: 0 2px 0;
@@ -162,10 +178,13 @@ p {
   position: absolute;
   bottom: 0;
   left: 0;
+  -moz-animation: slide-in-right 1.25s;
   -webkit-animation: slide-in-right 1.25s;
           animation: slide-in-right 1.25s;
+  -moz-animation: slide-in-right 1.25s cubic-bezier(0.625, 0.075, 0.11, 1.165);
   -webkit-animation: slide-in-right 1.25s cubic-bezier(0.625, 0.075, 0.11, 1.165);
           animation: slide-in-right 1.25s cubic-bezier(0.625, 0.075, 0.11, 1.165);
+  -moz-animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
   -webkit-animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
           animation-timing-function: cubic-bezier(0.625, 0.075, 0.11, 1.165);
   font-size: 35px;
@@ -175,10 +194,12 @@ p {
 
 @-webkit-keyframes slide-in {
   0% {
+    -moz-transform: translate3d(-300px, 0, 0);
     -webkit-transform: translate3d(-300px, 0, 0);
             transform: translate3d(-300px, 0, 0);
   }
   100% {
+    -moz-transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0);
   }
@@ -186,48 +207,58 @@ p {
 
 @keyframes slide-in {
   0% {
+    -moz-transform: translate3d(-300px, 0, 0);
     -webkit-transform: translate3d(-300px, 0, 0);
             transform: translate3d(-300px, 0, 0);
   }
   100% {
+    -moz-transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0);
   }
 }
 @-webkit-keyframes slide-in-slow {
   0% {
+    -moz-transform: translate3d(-300px, 0, 0);
     -webkit-transform: translate3d(-300px, 0, 0);
             transform: translate3d(-300px, 0, 0);
   }
   20% {
+    -moz-transform: translate3d(-300px, 0, 0);
     -webkit-transform: translate3d(-300px, 0, 0);
             transform: translate3d(-300px, 0, 0);
   }
   100% {
+    -moz-transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0);
   }
 }
 @keyframes slide-in-slow {
   0% {
+    -moz-transform: translate3d(-300px, 0, 0);
     -webkit-transform: translate3d(-300px, 0, 0);
             transform: translate3d(-300px, 0, 0);
   }
   20% {
+    -moz-transform: translate3d(-300px, 0, 0);
     -webkit-transform: translate3d(-300px, 0, 0);
             transform: translate3d(-300px, 0, 0);
   }
   100% {
+    -moz-transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0);
   }
 }
 @-webkit-keyframes slide-in-right {
   0% {
+    -moz-transform: translate3d(400px, 0, 0);
     -webkit-transform: translate3d(400px, 0, 0);
             transform: translate3d(400px, 0, 0);
   }
   30% {
+    -moz-transform: translate3d(400px, 0, 0);
     -webkit-transform: translate3d(400px, 0, 0);
             transform: translate3d(400px, 0, 0);
     opacity: 0;
@@ -236,6 +267,7 @@ p {
     opacity: 0;
   }
   100% {
+    -moz-transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0);
     opacity: 1;
@@ -243,10 +275,12 @@ p {
 }
 @keyframes slide-in-right {
   0% {
+    -moz-transform: translate3d(400px, 0, 0);
     -webkit-transform: translate3d(400px, 0, 0);
             transform: translate3d(400px, 0, 0);
   }
   30% {
+    -moz-transform: translate3d(400px, 0, 0);
     -webkit-transform: translate3d(400px, 0, 0);
             transform: translate3d(400px, 0, 0);
     opacity: 0;
@@ -255,6 +289,7 @@ p {
     opacity: 0;
   }
   100% {
+    -moz-transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
             transform: translate3d(0, 0, 0);
     opacity: 1;
