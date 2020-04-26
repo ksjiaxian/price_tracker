@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/bootstrap.min.css') }}">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/minix.css') }}">
     <title>Price Tracker</title>
   </head>
@@ -37,26 +37,19 @@
     </nav>
 
     <div class="container">
-      <h1 class="page-title">
-        Animated card
-      </h1>
-      <h2 class="page-sub-title">Animate on page load, Flip on hover</h2>
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+          <br /><br />
+          
+          <h1><strong>Price Tracker</strong></h1>
+          <p class="text-muted">Welcome to the CIS 550 Price Tracker! This webapp enables users to view the performance of various blue chip stocks over time, allowing them to observe what type of companies delivered high returns over the last several decades. In addition, they can view the value of various commodities and collectible items and observe how much they increase in value over time. Each user is given $100,000 in 2020 U.S. dollars to create the best mix of stocks and commodities to maximize their long-term return. </p>
+            {{ dbtest|safe }}
+        </div>
+        <div class="col-md-2"></div>
+      </div>
     </div>
     
-    <div class="card-container">
-      <div class="card">
-        <div class="front">
-          <h2 class="sub-title">Question 1</h2>
-          <h1 class="title">
-            Which has a better return over time: Beanie Baby Valentino Bear or this item?
-          </h1>
-      </div>
-      <div class="back">
-        <h3 class="synopsis">Answer</h3>
-        <p>This item has a much higher value!</p>
-    </div>
-    </div>
-    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

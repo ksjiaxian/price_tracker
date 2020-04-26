@@ -43,7 +43,7 @@ FROM Descriptions d
 WHERE d.itemID = AAPL
 
 --2. How much did this stock drop (percentage) on the worst day of the market (3-16-2020)?--
-SELECT (t.today_price - x.yesterday_price) price_delta
+SELECT ((t.today_price - x.yesterday_price)/x.yesterday_price * 100) price_delta
 FROM
 (SELECT s.AAPL as today_price
 FROM Stocks s 
@@ -53,7 +53,7 @@ FROM Stocks s
 WHERE s.dateID = 20200313) x ;
 
 --3. How much did the stock change when markets reopened after 9/11 (20010917)?--
-SELECT (t.today_price - x.yesterday_price) price_delta
+SELECT ((t.today_price - x.yesterday_price)/(x.yesterday_price+0.0001)) price_delta
 FROM
 (SELECT s.AAPL as today_price
 FROM Stocks s 
@@ -92,7 +92,7 @@ WHERE c.dateID = 20200102) t,
 FROM Commodities c
 WHERE c.dateID = 20190502) p ;
 
---7. Return the higher inflation-adjusted value of _______ or Sears? (in 2006)--
+--7. Return the difference between the inflation-adjusted values of ___ and Sears in 2006--
 WITH Sears AS (SELECT (SHLDQ/AMOUNT) as adjusted_sears
 FROM (SELECT dateID, SHLDQ
 FROM Stocks s
@@ -105,7 +105,7 @@ FROM Commodities c
 WHERE dateID = 20060323) a 
 JOIN Dates d ON a.dateID = d.dateID
 JOIN Inflation i ON d.Year = i.Year)
-SELECT GREATEST(v.adjusted_product, s.adjusted_sears) as higher_value
+SELECT v.adjusted_product - s.adjusted_sears as difference
 FROM Sears s, Valentino v;
 
 --8. Has this item's percentage return beat the market from 2017 onwards? --

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/bootstrap.min.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/minix.css') }}">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+
+    <title>Price Tracker</title>
+
+  </head>
+  <body>
+    <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <a class="navbar-brand" href="/"><strong>Price Tracker</strong></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/stocks">Stocks</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/commodities">Commodities</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/explore">Explore</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/cart">Cart</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 class="page-title"> </h1>
+    </div>
+    
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 1</h2>
+          <h1 class="title">
+            What is {{item_name}}?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>{{q1}}</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 2</h2>
+          <h1 class="title">
+            How many percentage points did {{item_name}} moved on the worst day of the stock market (3-16-2020)?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>On the worst day of the stock market, {{item_name}} moved {{q2}} percentage points.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 2</h2>
+          <h1 class="title">
+            How many percentage points did {{item_name}} moved on the worst day of the stock market (3-16-2020)?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>On the worst day of the stock market, {{item_name}} moved {{q2}} percentage points.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 3</h2>
+          <h1 class="title">
+            By how many percentage points did {{item_name}} change when the stock market reopened after 9/11?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>When the market reopened after 9/11, {{item_name}} moved {{q3}} percentage points.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 4</h2>
+          <h1 class="title">
+            What is the average price of {{item_name}} since 2000, adjusted for inflation?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>Adjusted for inflation, the average price of {{item_name}} since 2000 is {{q4}}.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 5</h2>
+          <h1 class="title">
+            In the last 10 days, has {{item_name}} been trending down or up?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>In the last 10 days, the price of {{item_name}} has changed by {{q5}}.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 6</h2>
+          <h1 class="title">
+            How volatile is the price of {{item_name}} over the last 8 months?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>Over the last 8 months, the price of {{item_name}} has changed by {{q6}}.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 7</h2>
+          <h1 class="title">
+            What is the difference between the inflation-adjusted values of {{item_name}} and Sears in 2006?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>The difference in the inflation-adjusted values of {{item_name}} and Sears in 2006 is {{q7}}, meaning that one share of {{item_name}} was {{q7}} more than that of Sears.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 8</h2>
+          <h1 class="title">
+            Has {{item_name}}'s percentage return beat the market return from 2017 onwards?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>The percentage return of {{item_name}} is {{q8_2}}, while the market return is {{q8_1}}. </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card">
+        <div class="front">
+          <h2 class="sub-title">Question 9</h2>
+          <h1 class="title">
+            Has {{item_name}}'s percentage return beat the risk-free rate (10 year T-bills) from 2017 onwards?
+          </h1>
+        </div>
+        <div class="back">
+          <h3 class="synopsis">Answer</h3>
+          <p>The percentage return of {{item_name}} is {{q9_1}}, while the risk-free rate is {{q9_2}}. </p>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

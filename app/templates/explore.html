@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/bootstrap.min.css') }}">
+    
     <title>Price Tracker</title>
   </head>
   <body>
@@ -45,31 +45,31 @@
           <p class="text-muted">Explore different investments and learn about their performance.</p>
           <small>Click on an item to learn more about it. </small>
           <ul style="margin-top: 10px;" class="list-group">
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=SP"><li class="list-group-item"> S&P 500 (INX) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=NASDAQ"><li class="list-group-item"> Nasdaq (IXIC) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=DOW"><li class="list-group-item"> Dow Jones (DJI) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=AAPL"><li class="list-group-item"> Apple (APPL) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=AMZN"><li class="list-group-item"> Amazon (AMZN) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=GE"><li class="list-group-item"> General Electric (GE) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=PG"><li class="list-group-item"> Procter & Gamble Company (PG) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=SHLDQ"><li class="list-group-item"> Sears Holding Group (SHLDQ) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=JCP"><li class="list-group-item"> J.C. Penney (JCP) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=FMCC"><li class="list-group-item"> Freddie Mac (FMCC) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=BB"><li class="list-group-item"> Blackberry (BB) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=CHK"><li class="list-group-item"> Chesapeake Energy (CHK) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=AXL"><li class="list-group-item"> American Axle and Manufacturing (AXL) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=BRJRI"><li class="list-group-item"> BJ's Restaurants (BJRI) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=GWPH"><li class="list-group-item"> GW Pharmaceuticals (GWPH) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=IBM"><li class="list-group-item"> IBM (IBM) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=CCL"><li class="list-group-item"> Carnival Cruises (CCL) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=stocks&name=XOM"><li class="list-group-item"> ExxonMobil (XOM) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=commodities&name=GOLD"><li class="list-group-item"> Gold <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=commodities&name=OIL"><li class="list-group-item"> Oil <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=commodities&name=WAGNER"><li class="list-group-item"> T206 Honus Wagner Baseball Card <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=commodities&name=VALENTINO"><li class="list-group-item"> Ty Beanie Baby - Valentino the Bear <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=commodities&name=ROMEO"><li class="list-group-item"> 1939 Alfa Romeo 8C 2900B Lungo Spider <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=commodities&name=MARIO"><li class="list-group-item"> Super Mario 64 - Nintendo 64 <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
-            <a style="margin-top: 3px" href="/item?kind=commodities&name=POKEMON"><li class="list-group-item"> Pokemon FireRed - Game Boy Advance <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=indexes&name=SP"><li class="list-group-item"> S&P 500 (INX) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=indexes&name=NASDAQ"><li class="list-group-item"> Nasdaq (IXIC) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=indexes&name=DOW"><li class="list-group-item"> Dow Jones (DJI) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=AAPL"><li class="list-group-item"> Apple (APPL) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=AMZN"><li class="list-group-item"> Amazon (AMZN) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=GE"><li class="list-group-item"> General Electric (GE) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=PG"><li class="list-group-item"> Procter & Gamble Company (PG) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=SHLDQ"><li class="list-group-item"> Sears Holding Group (SHLDQ) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=JCP"><li class="list-group-item"> J.C. Penney (JCP) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=FMCC"><li class="list-group-item"> Freddie Mac (FMCC) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=BB"><li class="list-group-item"> Blackberry (BB) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=CHK"><li class="list-group-item"> Chesapeake Energy (CHK) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=AXL"><li class="list-group-item"> American Axle and Manufacturing (AXL) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=BJRI"><li class="list-group-item"> BJ's Restaurants (BJRI) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=GWPH"><li class="list-group-item"> GW Pharmaceuticals (GWPH) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=IBM"><li class="list-group-item"> IBM (IBM) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=CCL"><li class="list-group-item"> Carnival Cruises (CCL) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=stocks&name=XOM"><li class="list-group-item"> ExxonMobil (XOM) <span style="margin-left: 15px" class="badge badge-primary">Stocks</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=commodities&name=GOLD"><li class="list-group-item"> Gold <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=commodities&name=OIL"><li class="list-group-item"> Oil <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=commodities&name=WAGNER"><li class="list-group-item"> T206 Honus Wagner Baseball Card <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=commodities&name=VALENTINO"><li class="list-group-item"> Ty Beanie Baby - Valentino the Bear <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=commodities&name=ROMEO"><li class="list-group-item"> 1939 Alfa Romeo 8C 2900B Lungo Spider <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=commodities&name=MARIO"><li class="list-group-item"> Super Mario 64 - Nintendo 64 <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
+            <a style="margin-top: 3px" href="/itemexplore?kind=commodities&name=POKEMON"><li class="list-group-item"> Pokemon FireRed - Game Boy Advance <span style="margin-left: 15px" class="badge badge-success">Commodities</span> </li></a>
           </ul>
           <br /> <br />
         </div>
