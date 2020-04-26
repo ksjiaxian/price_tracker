@@ -38,7 +38,7 @@ WHERE s.dateID >= 20200211
 AND s.dateID <= 20200320;
 
 --1. What does this company do?--
-SELECT d.descr
+SELECT d.desr
 FROM Descriptions d 
 WHERE d.itemID = AAPL
 

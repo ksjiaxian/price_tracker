@@ -120,7 +120,7 @@ def itemexplore():
     kind = request.args.get('kind')
     name = request.args.get('name')
     item_name = get_item_name(name)
-    q1 = get_q1(item)
+    q1 = get_q1(name)
     q2 = get_q2(name, kind)
     q3 = get_q3(name, kind)
     q4 = get_q4(name, kind)
@@ -372,7 +372,22 @@ def get_quick_info(item, table_name, oldest_date=None):
 # These are all to get answers for explore pages
 # Separated for clarity 
 def get_q1(item):
-    return "Description will be loaded later after Kenny ingests data"
+    item_string = "'" + item + "'"
+    query = "SELECT d.desr FROM Descriptions d WHERE d.itemID = " + item_string
+    print(query)
+    connection = None
+    try:
+        connection = cx_Oracle.connect(
+            username,
+            password,
+            dsn)
+        connection.cursor            
+    except cx_Oracle.Error as error:
+        connection.close()
+
+    c = connection.cursor() 
+    c.execute(query) 
+    return [str(i[0]) for i in c][0]
 
 def get_q2(item, kind):
     if (item == "SP" or item == "NASDAQ" or item == "DOW"):

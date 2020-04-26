@@ -56,3 +56,9 @@ CREATE TABLE Indexes (
 	bitcoin DECIMAL(19,2) NOT NULL,
 	FOREIGN KEY (date) REFERENCES Date (date),
 	PRIMARY KEY (date) );
+
+CREATE TABLE Descriptions (
+	itemID VARCHAR(10) NOT NULL,
+	desr VARCHAR(5000),
+	PRIMARY KEY (itemID)
+)
