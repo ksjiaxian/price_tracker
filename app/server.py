@@ -254,13 +254,9 @@ def get_data(item, table_name, date = None):
 
     c = connection.cursor()
     c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s' + oldest_date_condition)
-
-
-    data_points = {}
-    for i in c:
-        data_points[int(i[0])] = i[1]
-
-    return name, data_points
+    
+    columns = [i[0] for i in c.description]
+    return name, [dict(zip(columns, row)) for row in c]
 
 
 def get_curr_price(item, table_name):
@@ -317,33 +313,30 @@ def get_quick_info(item, table_name, oldest_date=None):
     c = connection.cursor()
     c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s')
 
-    min_price = connection.cursor()
-    min_price.execute(
+    c.execute(
         'SELECT MIN( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition)
-    min_price = '$' + [str(i[0]) for i in min_price][0]
-    min_date = connection.cursor()
-    min_date.execute(
+    min_price = '$' + [str(i[0]) for i in c][0]
+
+    c.execute(
         'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MIN(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition + ')' + oldest_date_condition)
-    min_date = [str(i[0]) for i in min_date][0]
+    min_date = [str(i[0]) for i in c][0]
     min_date_pretty = date_prettify(min_date)
 
-    max_price = connection.cursor()
-    max_price.execute(
+
+    c.execute(
         'SELECT MAX( ' + item + ' ) FROM ' + table_name + ' s WHERE s.' + item + ' > 0' + oldest_date_condition)
-    max_price = '$' + [str(i[0]) for i in max_price][0]
-    max_date = connection.cursor()
-    max_date.execute(
+    max_price = '$' + [str(i[0]) for i in c][0]
+
+    c.execute(
         'SELECT dateID FROM ' + table_name + ' s WHERE s.' + item + ' = (SELECT MAX(' + item + ') FROM ' + table_name + ' s WHERE s.' + item + ' > 0 ' + oldest_date_condition + ')' + oldest_date_condition)
-    max_date = [str(i[0]) for i in max_date][0]
+    max_date = [str(i[0]) for i in c][0]
     max_date_pretty = date_prettify(max_date)
 
-    max_history = connection.cursor()
-    max_history.execute('Select history as new_today From History h Where h.dateid = ' + max_date)
-    max_history = max_history.fetchone()
+    c.execute('Select history as new_today From History h Where h.dateid = ' + max_date)
+    max_history = c.fetchone()
 
-    min_history = connection.cursor()
-    min_history.execute('Select history as new_today From History h Where h.dateid = ' + min_date)
-    min_history = min_history.fetchone()
+    c.execute('Select history as new_today From History h Where h.dateid = ' + min_date)
+    min_history = c.fetchone()
 
     try:
         max_history = max_history[0]
