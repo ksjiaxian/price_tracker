@@ -120,30 +120,20 @@ def itemexplore():
     kind = request.args.get('kind')
     name = request.args.get('name')
     item_name = get_item_name(name)
-    q1 = get_q1(name)
-    q2 = get_q2(name, kind)
-    q3 = get_q3(name, kind)
-    q4 = get_q4(name, kind)
-    q5 = get_q5(name, kind)
-    q6 = get_q6(name, kind)
-    q7 = get_q7(name, kind)
-    q8_1, q8_2 = get_q8(name, kind)
-    q9_1, q9_2 = get_q9(name, kind)
+    explore_data = get_explore_data(name, kind)
     return render_template("itemexplore.html",
                             item_name=item_name,
-                            q1=q1,
-                            q2=q2, 
-                            q3=q3,
-                            q4=q4,
-                            q5=q5,
-                            q6=q6,
-                            q7=q7,
-                            q8_1=q8_1,
-                            q8_2=q8_2,
-                            q9_1=q9_1,
-                            q9_2=q9_2)
-
-
+                            q1=explore_data[0],
+                            q2=explore_data[1], 
+                            q3=explore_data[2],
+                            q4=explore_data[3],
+                            q5=explore_data[4],
+                            q6=explore_data[5],
+                            q7=explore_data[6],
+                            q8_1=explore_data[7],
+                            q8_2=explore_data[8],
+                            q9_1=explore_data[9],
+                            q9_2=explore_data[10])
 
 @app.route("/stocks", methods=['GET', 'POST'])
 def stocks():
@@ -371,7 +361,7 @@ def get_quick_info(item, table_name, oldest_date=None):
 
 # These are all to get answers for explore pages
 # Separated for clarity 
-def get_q1(item):
+def get_explore_data(item, kind):
     item_string = "'" + item + "'"
     query = "SELECT d.desr FROM Descriptions d WHERE d.itemID = " + item_string
     print(query)
@@ -387,181 +377,57 @@ def get_q1(item):
 
     c = connection.cursor() 
     c.execute(query) 
-    return [str(i[0]) for i in c][0]
-
-def get_q2(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    q1_ans = [str(i[0]) for i in c][0]
     query = "SELECT ((t.today_price - x.yesterday_price)/x.yesterday_price * 100) price_delta FROM " + \
             "(SELECT s." + item + " as today_price FROM " + kind +  " s WHERE s.dateID = 20200316) t, " + \
             "(SELECT s." + item + " as yesterday_price FROM " + kind + " s WHERE s.dateID = 20200313) x "
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
-    c = connection.cursor() 
     c.execute(query) 
-    return [str(round(i[0],2)) for i in c][0]
-    
-def get_q3(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    q2_ans = [str(round(i[0],2)) for i in c][0]
     query = "SELECT ((t.today_price - x.yesterday_price)/(x.yesterday_price+0.0001) * 100) price_delta FROM " + \
             "(SELECT s." + item + " as today_price FROM " + kind +  " s WHERE s.dateID = 20010917) t, " + \
             "(SELECT s." + item + " as yesterday_price FROM " + kind + " s WHERE s.dateID = 20010910) x "
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
-    c = connection.cursor() 
-    c.execute(query) 
-    return [str(round(i[0],2)) for i in c][0]
-
-def get_q4(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    c.execute(query)         
+    q3_ans = [str(round(i[0],2)) for i in c][0]
     query = "SELECT AVG(adjusted_value) FROM (SELECT (" + item + "/AMOUNT) as adjusted_value " \
             "FROM (SELECT dateID, " + item + " FROM " + kind +  " s WHERE dateID >= 20000103) a " + \
             "JOIN Dates d ON a.dateID = d.dateID JOIN Inflation i ON d.Year = i.Year)"
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
-    c = connection.cursor() 
     c.execute(query) 
-    return "$" + [str(round(i[0],2)) for i in c][0]
-
-
-def get_q5(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    q4_ans = "$" + [str(round(i[0],2)) for i in c][0]
     query = "SELECT (t.today_price - x.yesterday_price) price_delta FROM " + \
             "(SELECT s." + item + " as today_price FROM " + kind +  " s WHERE s.dateID = 20200323) t, " + \
             "(SELECT s." + item + " as yesterday_price FROM " + kind + " s WHERE s.dateID = 20200313) x "
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
-    c = connection.cursor() 
     c.execute(query) 
-    return "$" + [str(round(i[0],2)) for i in c][0]
-
-def get_q6(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    q5_ans = "$" + [str(round(i[0],2)) for i in c][0]
     query = "SELECT (t.today_value - p.past_value) price_delta FROM (SELECT c." + item + " as today_value " \
             "FROM " + kind +  " c WHERE c.dateID = 20200102) t, (SELECT c." + item +  " as past_value FROM " + kind + \
             " c WHERE c.dateID = 20190502) p"
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
-    c = connection.cursor() 
     c.execute(query) 
-    return "$" + [str(round(i[0],2)) for i in c][0]
-
-def get_q7(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    q6_ans = "$" + [str(round(i[0],2)) for i in c][0]
     query = "WITH Sears AS (SELECT (SHLDQ/AMOUNT) as adjusted_sears FROM (SELECT dateID, SHLDQ FROM Stocks s " \
             "WHERE dateID = 20060323) a JOIN Dates d ON a.dateID = d.dateID JOIN Inflation i ON d.Year = i.Year), " + \
             "Item AS (SELECT (" + item + "/AMOUNT) AS adjusted_product FROM (SELECT dateID, " + item + " FROM " + kind + " c " \
             "WHERE dateID = 20060323) a JOIN Dates d ON a.dateID = d.dateID JOIN Inflation i ON d.Year = i.Year) " + \
             "SELECT v.adjusted_product - s.adjusted_sears as difference FROM Sears s, Item v"
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
-    c = connection.cursor() 
     c.execute(query) 
-    return "$" + [str(round(i[0],2)) for i in c][0]
-
-def get_q8(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    q7_ans = "$" + [str(round(i[0],2)) for i in c][0]
     query = "SELECT ((tm.today_mkt_price - xm.yesterday_mkt_price)/xm.yesterday_mkt_price*100) AS market_return, " \
             "((t.today_item_price - x.yesterday_item_price)/x.yesterday_item_price*100) AS item_return FROM (SELECT s." + \
             item + " as today_item_price FROM " + kind + " s WHERE s.dateID = 20200323) t, (SELECT s." + item + \
             " as yesterday_item_price FROM " + kind + " s WHERE s.dateID = 20170103) x, (SELECT i.SP as today_mkt_price " + \
             "FROM Indexes i WHERE i.dateID = 20200323) tm, (SELECT i.SP as yesterday_mkt_price FROM Indexes i WHERE i.dateID = 20170103) xm"
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
-    c = connection.cursor() 
     c.execute(query) 
-    first = [str(round(i[0],2)) for i in c][0]
-    c = connection.cursor() 
+    q81_ans = [str(round(i[0],2)) for i in c][0]
     c.execute(query) 
-    second = [str(round(i[1],2)) for i in c][0]
-    return first, second
-
-def get_q9(item, kind):
-    if (item == "SP" or item == "NASDAQ" or item == "DOW"):
-        kind = "Indexes"
+    q82_ans = [str(round(i[1],2)) for i in c][0]
     query = "SELECT ((t.today_item_price - x.yesterday_item_price)/x.yesterday_item_price*100) AS item_return, 17.067 AS tbill_return " \
             "FROM (SELECT s." + item + " as today_item_price FROM " + kind + " s WHERE s.dateID = 20200323) t, " + \
             "(SELECT s." + item + " as yesterday_item_price FROM " + kind + " s WHERE s.dateID = 20170103) x"
-    connection = None
-    try:
-        connection = cx_Oracle.connect(
-            username,
-            password,
-            dsn)
-        connection.cursor            
-    except cx_Oracle.Error as error:
-        connection.close()
-
+    c.execute(query) 
+    q91_ans = [str(round(i[0],2)) for i in c][0]
     c = connection.cursor() 
     c.execute(query) 
-    first = [str(round(i[0],2)) for i in c][0]
-    c = connection.cursor() 
-    c.execute(query) 
-    second = [str(round(i[1],2)) for i in c][0]
-    return first, second
-
+    q92_ans = [str(round(i[1],2)) for i in c][0]
+    return [q1_ans, q2_ans, q3_ans, q4_ans, q5_ans, q6_ans, q7_ans, q81_ans, q82_ans, q91_ans, q92_ans]
 
 # This function returns the twitter link for embedding
 def get_twitter_link(item):
