@@ -254,9 +254,12 @@ def get_data(item, table_name, date = None):
 
     c = connection.cursor()
     c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s' + oldest_date_condition)
-    
-    columns = [i[0] for i in c.description]
-    return name, [dict(zip(columns, row)) for row in c]
+
+    data_points = {}
+    for i in c:
+        data_points[int(i[0])] = i[1]
+
+    return name, data_points
 
 
 def get_curr_price(item, table_name):
