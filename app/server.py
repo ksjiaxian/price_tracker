@@ -42,16 +42,16 @@ def item():
             table = 'INDEXES'
         else:
             table = 'STOCKS'
-        (return_name, data) = get_data(name, table)
+        (_, return_name, data) = get_data(name, table)
         (_, max_price, min_price, max_date, min_date, max_history, min_history) = get_quick_info(name, table)
-        curr_price = get_curr_price(name, table)
+        _, curr_price = get_curr_price(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
     else:
         table = 'COMMODITIES'
-        (return_name, data) = get_data(name, table)
+        (_, return_name, data) = get_data(name, table)
         (_, max_price, min_price, max_date, min_date, max_history, min_history) = get_quick_info(name, table)
-        curr_price = get_curr_price(name, table)
+        _, curr_price = get_curr_price(name, table)
         link = get_twitter_link(name)
         item_name = get_item_name(name)
 
@@ -165,9 +165,16 @@ def cart():
     best_price_difference = 0
     worst_price_difference = 100000
     value_by_date = {}
+    connection = None
     for (share, share_date), (num_shares, share_price) in portfolio:
         purchase_price += num_shares * share_price
-        current_price = float(get_curr_price(get_ticker(share), get_table_name(share))[1:])
+        if connection is None:
+            connect, current_price = get_curr_price(get_ticker(share), get_table_name(share))
+            current_price = float(current_price[1:])
+            connection = connect
+        else:
+            _, current_price = get_curr_price(get_ticker(share), get_table_name(share), connection)
+            current_price = float(current_price[1:])
         cart_value += num_shares * current_price
         template = '<a style = "margin-top: 3px" href = "/item"> <li class ="list-group-item"> ' \
                    '{date} : {quantity} shares of {item} at ${price} each <span style="margin-left: 15px" ' \
@@ -176,7 +183,11 @@ def cart():
             quantity=num_shares, price=share_price,
             item=share)
         cart_html.append(template)
-        (return_name, data) = get_data(get_ticker(share), get_table_name(share), share_date)
+        if connection is None:
+            (connect, return_name, data) = get_data(get_ticker(share), get_table_name(share), share_date)
+            connection = connect
+        else:
+            (_, return_name, data) = get_data(get_ticker(share), get_table_name(share), share_date, connection)
         price_difference = current_price - share_price
         if price_difference > best_price_difference:
             best = share
@@ -201,13 +212,10 @@ def cart():
     start_dates = json.dumps(start_dates)
     names = json.dumps(names)
 
-    (return_name, data_json) = get_data('AAPL', 'Stocks')
-
     return render_template("cart.html",
                            cart_price=round(purchase_price,2),
                            cart_value=round(cart_value,2),
                            value_by_date = value_by_date,
-                           data = data_json,
                            names = names,
                            best = best,
                            worst = worst,
@@ -239,18 +247,22 @@ def date_prettify(date_id):
 
 
 # this function gets the data of a stock, commodity, or index given its type and name
-def get_data(item, table_name, date = None):
+def get_data(item, table_name, date=None, connect=None):
     oldest_date_condition = ''
     if not (date is None):
         oldest_date_condition += ' WHERE dateID >= ' + str(date)
 
     connection = None
-    try:
-        connection = cx_Oracle.connect(username, password, dsn)
+    if connect is None:
+        print('here')
+        try:
+            connection = cx_Oracle.connect(username, password, dsn)
 
-    except cx_Oracle.Error as error:
-        print(error)
-        connection.close()
+        except cx_Oracle.Error as error:
+            print(error)
+            connection.close()
+    else:
+        connection = connect
 
     c = connection.cursor()
     c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s' + oldest_date_condition)
@@ -259,17 +271,21 @@ def get_data(item, table_name, date = None):
     for i in c:
         data_points[int(i[0])] = i[1]
 
-    return name, data_points
+    return connection, name, data_points
 
 
-def get_curr_price(item, table_name):
+def get_curr_price(item, table_name, connect = None):
     connection = None
-    try:
-        connection = cx_Oracle.connect(username, password, dsn)
+    if connect is None:
+        connection = None
+        try:
+            connection = cx_Oracle.connect(username, password, dsn)
 
-    except cx_Oracle.Error as error:
-        print(error)
-        connection.close()
+        except cx_Oracle.Error as error:
+            print(error)
+            connection.close()
+    else:
+        connection = connect
 
     if table_name == "STOCKS":
         curr_price = connection.cursor()
@@ -280,7 +296,7 @@ def get_curr_price(item, table_name):
         curr_price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = 20200324')
         curr_price = '$' + [str(i[0]) for i in curr_price][0]
 
-    return curr_price
+    return connection, curr_price
 
 
 def get_price_by_date(item, table_name, date):
