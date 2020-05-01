@@ -67,6 +67,8 @@ class Cart:
                 value_tuple = (num_shares, share_price)
                 self.portfolio[key_tuple] = value_tuple
                 return True
+        else:
+            return False
 
     # share_name - string, share_date - int, num_shares - int, share_price - float
     # Return True - Transaction successful, portfolio update
@@ -75,7 +77,7 @@ class Cart:
     def removePortfolio(self, share_name, share_date, num_shares, share_price):
         # First make the tuple for the portfolio dictionary
         key_tuple = (share_name, share_date)
-        if key_tuple in self.portfolio.keys():
+        if key_tuple in self.portfolio.keys() and self.portfolio[key_tuple][0] - num_shares >= 0:
             # Update the cash total
             success = self.updateTotal(num_shares, share_price, "sell")
             # Check how many 

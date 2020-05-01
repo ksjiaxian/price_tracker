@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import cx_Oracle
 import json
 from datetime import datetime
@@ -30,6 +30,7 @@ def item():
     name = request.args.get('name')
     first_time = 'true'
 
+    error_message = ''
     recent_max_price = ''
     recent_max_date = ''
     recent_min_price = ''
@@ -83,19 +84,29 @@ def item():
         if action == 'Buy':
             print('buying')
             if request.form['pretend_date'] == '':
-                cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+                did_add_correctly = cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+                if not did_add_correctly:
+                    error_message = 'Error buying item'
             else:
                 try:
                     cart.addPortfolio(item, request.form['pretend_date'], int(quantity), float(get_price_by_date(get_ticker(item), get_table_name(item), request.form['pretend_date'])[1:]))
                 except:
-                    print('error adding item to cart: check the date')
+                    error_message = 'Date Error'
                     cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity),float(curr_price[1:]))
         else:
             print('selling')
-            cart.removePortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+            did_sell_correctly = cart.removePortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
+            if not did_sell_correctly:
+                error_message = 'Error selling item'
         cart.printCart()
 
+        # if successfully changed cart, then go straight there
+        if error_message == '':
+            print('no errors when buying')
+            return redirect(url_for('cart'))
+
     return render_template("item.html",
+                           error_message=error_message,
                            item_name=item_name,
                            name=name,
                            max=max_price,
@@ -494,13 +505,13 @@ def get_table_name(item):
               'IBM': 'Stocks',
               'Carnival Cruise Line': 'Stocks',
               'Exxon Mobil Corporation': 'Stocks',
-              'Gold': 'Stocks',
-              'Oil': 'Stocks',
-              'T206 Honus Wagner Baseball Card': 'Stocks',
-              'Ty Beanie Baby - Valentino the Bear': 'Stocks',
-              '1939 Alfa Romeo 8C 2900B Lungo Spider': 'Stocks',
-              'Super Mario 64 - Nintendo 64': 'Stocks',
-              'Pokemon FireRed - Game Boy Advance': 'Stocks'}
+              'Gold': 'Commodities',
+              'Oil': 'Commodities',
+              'T206 Honus Wagner Baseball Card': 'Commodities',
+              'Ty Beanie Baby - Valentino the Bear': 'Commodities',
+              '1939 Alfa Romeo 8C 2900B Lungo Spider': 'Commodities',
+              'Super Mario 64 - Nintendo 64': 'Commodities',
+              'Pokemon FireRed - Game Boy Advance': 'Commodities'}
     return tables[item]
 
 

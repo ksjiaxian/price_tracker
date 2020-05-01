@@ -113,6 +113,15 @@
              </form>
                 </div>
             <br>
+        {% if error_message %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <strong>{{ error_message | safe }} </strong>
+</div>
+          {% else %}
+          {% endif %}
             <br>
           <h2><strong>Quick Info</strong></h2>
 
