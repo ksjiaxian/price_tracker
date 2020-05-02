@@ -23,6 +23,9 @@ user_cart = Cart()
 def splash():
     return render_template("splash.html")
 
+@app.route("/login")
+def login():
+    return render_template("login.html")
 
 @app.route("/item", methods=['GET', 'POST'])
 def item():
