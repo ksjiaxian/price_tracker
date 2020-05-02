@@ -396,9 +396,9 @@ def get_explore_data(item, kind):
         connection = cx_Oracle.connect(
             username,
             password,
-            dsn)
-        connection.cursor            
+            dsn)          
     except cx_Oracle.Error as error:
+        print(error)
         connection.close()
 
     c = connection.cursor() 
