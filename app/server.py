@@ -136,6 +136,9 @@ def itemexplore():
     name = request.args.get('name')
     item_name = get_item_name(name)
     explore_data = get_explore_data(name, kind)
+    q10_obj = "Apple"
+    if (name == "AAPL"):
+        q10_obj = "Amazon"
     return render_template("itemexplore.html",
                             item_name=item_name,
                             q1=explore_data[0],
@@ -148,7 +151,9 @@ def itemexplore():
                             q8_1=explore_data[7],
                             q8_2=explore_data[8],
                             q9_1=explore_data[9],
-                            q9_2=explore_data[10])
+                            q9_2=explore_data[10],
+                            q10=explore_data[11],
+                            q10_obj = q10_obj)
 
 @app.route("/stocks", methods=['GET', 'POST'])
 def stocks():
@@ -454,7 +459,13 @@ def get_explore_data(item, kind):
     c = connection.cursor() 
     c.execute(query) 
     q92_ans = [str(round(i[1],2)) for i in c][0]
-    return [q1_ans, q2_ans, q3_ans, q4_ans, q5_ans, q6_ans, q7_ans, q81_ans, q82_ans, q91_ans, q92_ans]
+    query = "SELECT COUNT(Stocks.dateID) FROM Stocks JOIN Commodities ON Stocks.dateID = Commodities.dateID " + \
+            "JOIN Indexes ON Stocks.dateID = Indexes.dateID WHERE Exists (SELECT dateID, " + item + " FROM Stocks s WHERE " + \
+            "DateID >= 20100101) AND AAPL <> 0 AND Stocks.DateID >= 20100101 AND Stocks.AAPL - " + kind + "." + item + " < 0.1" + \
+            " AND ROWNUM <= 2000"
+    c.execute(query) 
+    q10_ans = [str(i[0]) for i in c][0]
+    return [q1_ans, q2_ans, q3_ans, q4_ans, q5_ans, q6_ans, q7_ans, q81_ans, q82_ans, q91_ans, q92_ans, q10_ans]
 
 # This function returns the twitter link for embedding
 def get_twitter_link(item):
