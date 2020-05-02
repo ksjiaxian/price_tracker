@@ -21,7 +21,7 @@ class Cart:
         portfolio = {}
         self.portfolio = {}
 
-        print('creating a new cart with $100000 initial amount')
+        # print('creating a new cart with $100000 initial amount')
 
     # num_shares - int, share_price (infl. adj) - float, transaction - string "sell/buy"
     # Return True - Transaction successful, total update
@@ -33,13 +33,13 @@ class Cart:
             self.total_cash = new_total_cash
             return True
         else:
-            print('buy')
+            # print('buy')
             new_total_cash = self.total_cash - trans_amount
             # This means transaction price is too high
             if (new_total_cash < 0):
                 return False
             else:
-                print('update')
+                # print('update')
                 self.total_cash = new_total_cash
                 return True
 

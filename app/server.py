@@ -64,9 +64,10 @@ def item():
         try:
             print('user typed in ' + request.form['oldest_date'])
             (_, recent_max_price, recent_min_price, recent_max_date, recent_min_date, recent_max_history,
-             recent_min_history, _) = get_quick_info(name, table, request.form['oldest_date'])
+            recent_min_history) = get_quick_info(name, table, request.form['oldest_date'])
         except:
             pass
+            print('error when entering date')
     elif request.method == 'POST' and request.form['action'] == 'clear':
         print('clearing recent prices')
         recent_max_price = ''
