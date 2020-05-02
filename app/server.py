@@ -589,4 +589,4 @@ if __name__ == "__main__":
     cart.addPortfolio("BlackBerry", str(20060605), 14, 21.73)
     cart.addPortfolio("Exxon Mobil Corporation", str(20150804), 32, 63.71)
     cart.addPortfolio("Chesapeake Energy", str(20100326), 27, 19.51)
-    app.run(port=8000, debug=True)
+    app.run(port=8000, host='0.0.0.0', debug=True)
