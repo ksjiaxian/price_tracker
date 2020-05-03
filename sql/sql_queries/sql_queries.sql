@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+-- Price Tracker! --
+-- QUERIES FOR ITEM PAGE --
+>>>>>>> de1aa30c5a71aca5f141539cb25f59e53a07ddb3
 -- 1. Obtain all price data over time - 2.15 sec
 SELECT dateID, DOW 
 FROM Indexes s
@@ -180,5 +185,4 @@ SELECT count(comparator)
 FROM
 (SELECT AAPL as comparator FROM Stocks s WHERE AAPL <> 0 AND AMZN <> 0) t
 WHERE Exists (SELECT AMZN as comparator FROM Stocks s WHERE AMZN <> 0) ;    
-    
     

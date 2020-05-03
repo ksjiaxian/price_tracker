@@ -30,10 +30,10 @@ CREATE TABLE Commodities (
 	oil DECIMAL(19,2) NOT NULL,
 	gold DECIMAL(19,2) NOT NULL,
 	pokemon DECIMAL(19,2) NOT NULL,
-	baseball_card DECIMAL(19,2) NOT NULL,
-	alfa_romeo DECIMAL(19,2) NOT NULL,
-	beanie_baby DECIMAL(19,2) NOT NULL,
-	mario_64 DECIMAL(19,2) NOT NULL,
+	wagner DECIMAL(19,2) NOT NULL,
+	romeo DECIMAL(19,2) NOT NULL,
+	valentino DECIMAL(19,2) NOT NULL,
+	mario DECIMAL(19,2) NOT NULL,
 	FOREIGN KEY (dateID) REFERENCES Date (dateID),
 	PRIMARY KEY (dateID) );
 
