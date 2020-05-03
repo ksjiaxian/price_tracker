@@ -329,7 +329,6 @@ def get_price_by_date(item, table_name, date):
         connection.close()
 
     price = connection.cursor()
-    print('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = ' + date)
     price.execute('SELECT ' + item + ' FROM ' + table_name + ' s WHERE s.dateID = ' + date)
     price = '$' + [str(i[0]) for i in price][0]
 
