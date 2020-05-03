@@ -136,9 +136,9 @@ def itemexplore():
     name = request.args.get('name')
     item_name = get_item_name(name)
     explore_data = get_explore_data(name, kind)
-    q10_obj = "Apple"
-    if (name == "AAPL"):
-        q10_obj = "Amazon"
+    q10_obj = "Amazon"
+    if (name == "AMZN"):
+        q10_obj = "Apple"
     return render_template("itemexplore.html",
                             item_name=item_name,
                             q1=explore_data[0],
@@ -458,15 +458,17 @@ def get_explore_data(item, kind):
     c = connection.cursor() 
     c.execute(query) 
     q92_ans = [str(round(i[1],2)) for i in c][0]
-    # query = "SELECT COUNT(Stocks.dateID) FROM Stocks JOIN Commodities ON Stocks.dateID = Commodities.dateID " + \
-    #         "JOIN Indexes ON Stocks.dateID = Indexes.dateID WHERE Exists (SELECT dateID, " + item + " FROM Stocks s WHERE " + \
-    #         "DateID >= 20100101) AND AAPL <> 0 AND Stocks.DateID >= 20100101 AND Stocks.AAPL - " + kind + "." + item + " < 0.1" + \
-    #         " AND ROWNUM <= 2000"
 
-    query = "SELECT count(comparator) " + \
-            "FROM "+ \
-            "(SELECT " + item + " as comparator FROM "+ kind +" s WHERE " + item + " <> 0 AND AMZN <> 0) t "+ \
-            "WHERE Exists (SELECT AMZN as comparator FROM Stocks s WHERE AMZN <> 0)"
+    if (item == 'AMZN'):
+        query = "SELECT count(comparator) " + \
+                "FROM " + \
+                "(SELECT DISTINCT " + item + " as comparator FROM " + kind + " s WHERE " + item + " <> 0) t " + \
+                "WHERE Exists (SELECT AAPL as comparator FROM Stocks s WHERE AAPL <> 0) AND comparator <> 0"
+    else:
+        query = "SELECT count(comparator) " + \
+                 "FROM "+ \
+                 "(SELECT DISTINCT " + item + " as comparator FROM "+ kind +" s WHERE " + item + " <> 0) t "+ \
+                 "WHERE Exists (SELECT AMZN as comparator FROM Stocks s WHERE AMZN <> 0) AND comparator <> 0"
 
     print(query)
     c.execute(query) 
