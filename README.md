@@ -1,6 +1,9 @@
 # Price Tracker
 CIS 550 Final Project: A Fun Interactive Price Tracker
 
+## Description
+This webapp enables users to view the performance of various blue chip stocks over time, allowing them to observe what type of companies delivered high returns over the last several decades. In addition, they can view the value of various commodities and collectible items and observe how much they increase in value over time. Each user is given $100,000 in 2020 U.S. dollars to create the best mix of stocks and commodities to maximize their long-term return.
+
 ## Live Version
 A live version of our app can be visited at: https://stormy-citadel-63553.herokuapp.com/
 
