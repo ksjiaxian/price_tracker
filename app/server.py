@@ -41,7 +41,7 @@ def item():
     recent_max_history = ''
     recent_min_history = ''
 
-    if kind == "stocks":
+    if kind.lower() == "stocks":
         if name == 'SP' or name == 'NASDAQ' or name == 'DOW':
             table = 'INDEXES'
         else:
@@ -196,7 +196,9 @@ def cart():
             _, current_price = get_curr_price(get_ticker(share), get_table_name(share), connection)
             current_price = float(current_price[1:])
         cart_value += num_shares * current_price
-        template = '<a style = "margin-top: 3px" href = "/item"> <li class ="list-group-item"> ' \
+        name = get_ticker(share)
+        kind = get_table_name(share)
+        template = '<a style = "margin-top: 3px" href="/item?kind='+kind+'&name='+name+'"> <li class ="list-group-item"> ' \
                    '{date} : {quantity} shares of {item} at ${price} each <span style="margin-left: 15px" ' \
                    'class ="badge badge-warning"> Stock </span> </li> </a>'.format(
             date=date_prettify(str(share_date)),
@@ -285,7 +287,8 @@ def get_data(item, table_name, date=None, connect=None):
         connection = connect
 
     c = connection.cursor()
-    c.execute('SELECT dateID, ' + item + ' FROM ' + table_name + ' s' + oldest_date_condition)
+    query = 'SELECT dateID, ' + item + ' FROM ' + table_name + ' s' + oldest_date_condition
+    c.execute(query)
 
     data_points = {}
     for i in c:
