@@ -13,6 +13,13 @@ A live version of our app can be visited at: https://stormy-citadel-63553.heroku
 To set this application up locally, begin by downloading this repository. You must install Python 3.7.6 and the following Python Libraries: Flask and cx_Oracle. \
 In addition, it is necessary for the user to install the local Oracle Instant Client. A tutorial to do this can be found [here](https://www.oracle.com/database/technologies/instant-client.html)
 
+## Running Application
+Once the local environment is set up, cd into the root of price_tracker and execute the following commands:
+```
+cd app
+python3 server.py
+```
+The app will be running on http://0.0.0.0:8000/
 ## Data Sources
 Stock/Index Data: www.finance.yahoo.com \
 Gold Data: https://bit.ly/2SvPoey \
