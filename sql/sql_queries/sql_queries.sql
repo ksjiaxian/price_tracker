@@ -1,8 +1,6 @@
-<<<<<<< HEAD
-=======
+
 -- Price Tracker! --
 -- QUERIES FOR ITEM PAGE --
->>>>>>> de1aa30c5a71aca5f141539cb25f59e53a07ddb3
 -- 1. Obtain all price data over time - 2.15 sec
 SELECT dateID, DOW 
 FROM Indexes s
@@ -63,7 +61,7 @@ WHERE h.dateid = 'max_date';
 --1. What does this company do?-- 0.518 sec
 SELECT d.desr
 FROM Descriptions d 
-WHERE d.itemID = AAPL
+WHERE d.itemID = AAPL;
 
 --2. How much did this stock drop (percentage) 
 --   on the worst day of the market? - 0.955 sec
@@ -170,19 +168,34 @@ FROM Stocks s
 WHERE s.dateID = 20200323) t,
 (SELECT s.AAPL as yesterday_item_price
 FROM Stocks s 
-WHERE s.dateID = 20170103) x
+WHERE s.dateID = 20170103) x;
 
 --10. How many times was the share price of this item 
 --    the same price as another item (limit 2000) while the other item was in business?
-SELECT count(comparator) as num_of_same_price
-FROM(SELECT AAPL AS comparator FROM Stocks s JOIN Commodities c ON s.dateID = c.dateID 
-    JOIN Indexes i ON s.dateID = i.dateID WHERE AAPL <> 0 AND AMZN <> 0) t
-WHERE Exists (SELECT AMZN as comparator FROM Stocks s JOIN Commodities c ON s.dateID = c.dateID 
-    JOIN Indexes i ON s.dateID = i.dateID WHERE AMZN <> 0) ;
+SELECT count(comp) as num_of_same_price
+FROM(SELECT DISTINCT AAPL AS comp 
+    FROM Stocks s 
+    JOIN Commodities c 
+    ON s.dateID = c.dateID 
+    JOIN Indexes i 
+    ON s.dateID = i.dateID 
+    WHERE AAPL <> 0) t
+WHERE EXISTS (SELECT AMZN as comp 
+    FROM Stocks s 
+    JOIN Commodities c 
+    ON s.dateID = c.dateID 
+    JOIN Indexes i 
+    ON s.dateID = i.dateID 
+    WHERE AMZN <> 0) 
+AND comp <> 0;
     
 -- after (the good one)    
-SELECT count(comparator)
-FROM
-(SELECT AAPL as comparator FROM Stocks s WHERE AAPL <> 0 AND AMZN <> 0) t
-WHERE Exists (SELECT AMZN as comparator FROM Stocks s WHERE AMZN <> 0) ;    
+SELECT count(comp) as num_of_same_price
+FROM(SELECT DISTINCT AAPL AS comp 
+    FROM Stocks s 
+    WHERE AAPL <> 0) t
+WHERE EXISTS (SELECT AMZN as comp 
+    FROM Stocks s 
+    WHERE AMZN <> 0) 
+AND comp <> 0;
     
