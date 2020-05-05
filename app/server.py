@@ -96,7 +96,7 @@ def item():
                     cart.addPortfolio(item, request.form['pretend_date'], int(quantity), float(get_price_by_date(get_ticker(item), get_table_name(item), request.form['pretend_date'])[1:]))
                 except:
                     error_message = 'Date Error'
-                    cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity),float(curr_price[1:]))
+                    # cart.addPortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity),float(curr_price[1:]))
         else:
             print('selling')
             did_sell_correctly = cart.removePortfolio(item, str(datetime.today().strftime('%Y%m%d')), int(quantity), float(curr_price[1:]))
